@@ -1,2 +1,2 @@
 # grapes
-Data Analysis Framework for Apache-Spark
+Data Analysis Framework based on CLARA distributed platform.
