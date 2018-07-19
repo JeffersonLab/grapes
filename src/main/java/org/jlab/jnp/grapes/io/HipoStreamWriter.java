@@ -29,9 +29,10 @@ public class HipoStreamWriter extends AbstractEventWriterService<HipoWriterStrea
             //writer.getSche.initFromDirectory(getSchemaDirectory(opts));
             //writer.open(file.toString());
             writer.getSchemaFactory().initFromDirectory(getSchemaDirectory(opts));
-            for(int i = 0; i < 5; i++){
-                writer.addWriter(i, file.toString());
-            }            
+            //for(int i = 0; i < 5; i++){
+            //    writer.addWriter(i, file.toString());
+            //}            
+            writer.setFileName(file.toString());
             writer.open();
             return writer;
         } catch (Exception e) {
