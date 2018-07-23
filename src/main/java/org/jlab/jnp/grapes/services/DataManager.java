@@ -20,8 +20,9 @@ public class DataManager {
     public static final int  TAGGER  = 1;
     public static final int FORWARD  = 2;
     public static final int CENTREAL = 3;
+    public static final int      ANY = -1;
     
-    public static void getParticleList(HipoEvent event){
+    public static ParticleList getParticleList(HipoEvent event){
         
         ParticleList pList = new ParticleList();
         HipoGroup group  = event.getGroup("REC::Particle");
@@ -60,5 +61,6 @@ public class DataManager {
             p.setStatus(detector);
             pList.add(p);
         }
+        return pList;
     }
 }

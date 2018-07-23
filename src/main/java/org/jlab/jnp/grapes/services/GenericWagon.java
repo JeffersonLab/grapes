@@ -19,7 +19,10 @@ import org.jlab.jnp.utils.json.JsonObject;
  */
 public class GenericWagon extends Wagon {
     
-    private EventFilter eventFilter = new EventFilter();
+    private EventFilter eventFilter        = new EventFilter();
+    private EventFilter eventFilterForward = new EventFilter();
+    private EventFilter eventFilterCentral = new EventFilter();
+    private EventFilter eventFilterTagger  = new EventFilter();
     
     public GenericWagon() {
         super("GenericWagon", "gavalian", "1.0");
@@ -42,6 +45,13 @@ public class GenericWagon extends Wagon {
                 }
                 list.add(p);
             }
+            list.setStatusWord(DataManager.FORWARD);
+            if(eventFilterForward.checkFinalState(list)==false) return false;
+            list.setStatusWord(DataManager.CENTREAL);
+            if(eventFilterCentral.checkFinalState(list)==false) return false;
+            list.setStatusWord(DataManager.TAGGER);
+            if(eventFilterTagger.checkFinalState(list)==false) return false;
+            list.setStatusWord(DataManager.ANY);
             return eventFilter.checkFinalState(list);
         }
         return false;
@@ -51,7 +61,15 @@ public class GenericWagon extends Wagon {
     public boolean init(String jsonString) {
         JsonObject jsonObj = Json.parse(jsonString).asObject();
         String filterString = jsonObj.getString("filter","X+:X-:Xn");
+        String filterStringForward  = jsonObj.getString("forward","X+:X-:Xn");
+        String filterStringCentral  = jsonObj.getString("central","X+:X-:Xn");
+        String filterStringTagger   = jsonObj.getString("tagger","X+:X-:Xn");
+        
         this.eventFilter.setFilter(filterString);
+        this.eventFilterForward.setFilter(filterStringForward);
+        this.eventFilterCentral.setFilter(filterStringCentral);
+        this.eventFilterTagger.setFilter(filterStringTagger);
+        
         System.out.println(" WAGON CONFIGURATION : set filter = " + filterString);
         return true;
     }
