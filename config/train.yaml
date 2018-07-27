@@ -6,6 +6,8 @@ io-services:
     class: org.jlab.jnp.grapes.io.HipoFrameWriter
     name: HipoFrameWriter
 services:
+  - class: org.jlab.jnp.grapes.services.JpsiTcsWagon
+    name: JPSITCS
   - class: org.jlab.jnp.grapes.services.GenericWagon
     name: PIONS
   - class: org.jlab.jnp.grapes.services.GenericWagon
@@ -14,6 +16,8 @@ services:
     name: PIONPID
 configuration:
   services:
+    JPSITCS:
+      id: 7
     PIONS:
       id: 1
       tagger: 11:X+:X-:Xn
