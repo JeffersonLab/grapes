@@ -1,0 +1,28 @@
+io-services:
+  reader:
+    class: org.jlab.jnp.grapes.io.HipoFrameReader
+    name: HipoFrameReader
+  writer:
+    class: org.jlab.jnp.grapes.io.HipoFrameWriter
+    name: HipoFrameWriter
+services:
+  - class: org.jlab.jnp.grapes.services.GenericWagon
+    name: PIONS
+  - class: org.jlab.jnp.grapes.services.GenericWagon
+    name: GAMMAS
+  - class: org.jlab.jnp.grapes.services.GenericWagon
+    name: PIONPID
+configuration:
+  services:
+    PIONS:
+      id: 1
+      tagger: 11:X+:X-:Xn
+      forward: 2-:1+
+    GAMMAS:
+      id: 2
+      filter: 11:2212:22:22:X+:X-:Xn
+    PIONPID:
+      id: 3
+      forward: 11:211:-211:Xn
+mime-types:
+  - binary/data-hipo-frame

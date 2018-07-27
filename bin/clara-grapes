@@ -46,7 +46,7 @@ if [ -z "${CLASSPATH}" ]; then
     for plugin in "${plugins_dir}"/*/; do
         plugin=${plugin%*/}
         if [ "${plugin##*/}" = "grapes" ]; then # COAT has special needs
-            CLASSPATH+=":${plugin}/lib/grapes/*:${plugin}/lib/services/*"
+            CLASSPATH+=":${plugin}/lib/core/*:${plugin}/lib/services/*"
         else
             CLASSPATH+=":${plugin}/services/*:${plugin}/lib/*"
         fi

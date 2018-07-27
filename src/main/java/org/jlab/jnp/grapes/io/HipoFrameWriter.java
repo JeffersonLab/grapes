@@ -1,21 +1,26 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package org.jlab.jnp.grapes.io;
 
 import java.nio.file.Path;
-
 import org.jlab.clara.engine.EngineDataType;
 import org.jlab.clara.std.services.AbstractEventWriterService;
 import org.jlab.clara.std.services.EventWriterException;
+import org.jlab.jnp.hipo.data.DataFrame;
 import org.jlab.jnp.hipo.data.HipoEvent;
 import org.jlab.jnp.hipo.io.HipoWriterStream;
 import org.jlab.jnp.utils.file.FileUtils;
 import org.json.JSONObject;
 
 /**
- * Service that converts HIPO transient data to HIPO persistent data
- * (i.e. writes HIPO events to an output file).
+ *
+ * @author gavalian
  */
-public class HipoStreamWriter extends AbstractEventWriterService<HipoWriterStream> {
-
+public class HipoFrameWriter extends AbstractEventWriterService<HipoWriterStream> {
+    
     private static final String CONF_COMPRESSION = "compression";
     private static final String CONF_SCHEMA = "schema_dir";
     
@@ -59,7 +64,20 @@ public class HipoStreamWriter extends AbstractEventWriterService<HipoWriterStrea
     @Override
     protected void writeEvent(Object event) throws EventWriterException {
         try {
-            HipoEvent hipo_event = (HipoEvent) event;
+            DataFrame  dataFrame = (DataFrame) event;
+            
+            int count = dataFrame.getCount();
+            for(int i = 0; i < count; i++){
+                byte[] buffer = dataFrame.getEntry(i);
+                HipoEvent  hipoEvent = new HipoEvent(buffer);
+                for(int k = 0; k < 32; k++){
+                    int status = hipoEvent.getEventStatusBit(k);
+                    if(status>0) {                 
+                        writer.writeEvent(k,hipoEvent);
+                    }
+                }
+            }
+           /* HipoEvent hipo_event = (HipoEvent) event;
             for(int i = 0; i < 5; i++){
                 //int bitStatus = hipo_event.getEventStatus();
                 //System.out.println("[writer] event status = " + bitStatus);
@@ -68,7 +86,7 @@ public class HipoStreamWriter extends AbstractEventWriterService<HipoWriterStrea
                     //System.out.println("-----> writing event with status # " + status);
                     writer.writeEvent(i,hipo_event);
                 }
-            }
+            }*/
         } catch (Exception e) {
             throw new EventWriterException(e);
         }
@@ -76,6 +94,6 @@ public class HipoStreamWriter extends AbstractEventWriterService<HipoWriterStrea
 
     @Override
     protected EngineDataType getDataType() {
-        return Clas12Types.HIPO;
+        return Clas12Types.HIPOFRAME;
     }
 }

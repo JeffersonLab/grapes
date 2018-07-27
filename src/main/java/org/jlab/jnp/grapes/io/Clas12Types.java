@@ -6,6 +6,9 @@ import org.jlab.clara.engine.EngineDataType;
 import org.jlab.jnp.hipo.data.HipoEvent;
 
 import java.nio.ByteBuffer;
+import org.jlab.jnp.hipo.data.DataFrame;
+import org.jlab.jnp.hipo4.baseio.RecordInputStream;
+import org.jlab.jnp.hipo4.baseio.RecordOutputStream;
 
 // TODO: put this in a common CLAS package
 // TODO: should bytes be copied?
@@ -27,9 +30,29 @@ public final class Clas12Types {
         }
     }
 
+    private static class FrameSerializer implements ClaraSerializer {
+
+        @Override
+        public ByteBuffer write(Object o) throws ClaraException {
+            DataFrame stream = (DataFrame) o;            
+            return stream.getByteBuffer();
+        }
+
+        @Override
+        public Object read(ByteBuffer bb) throws ClaraException {
+            return new DataFrame(bb.array());
+            //return new RecordInputStream(bb);
+        }
+        
+    }
+    
     public static final EngineDataType EVIO =
             new EngineDataType("binary/data-evio", EngineDataType.BYTES.serializer());
 
     public static final EngineDataType HIPO =
             new EngineDataType("binary/data-hipo", new HipoSerializer());
+    
+    public static final EngineDataType HIPOFRAME =
+            new EngineDataType("binary/data-hipo-frame", new FrameSerializer());
+    
 }

@@ -29,32 +29,23 @@ public class GenericWagon extends Wagon {
     }
 
     @Override
-    public boolean processDataEvent(HipoEvent event) {
+    public boolean processDataEvent(HipoEvent event) {        
+        //HipoNode node = event.getNode(331, 1);
+        ParticleList list = DataManager.getParticleList(event);
         
-        HipoNode node = event.getNode(331, 1);
-        ParticleList list = new ParticleList();        
+        list.setStatusWord(DataManager.FORWARD);
+        if(eventFilterForward.checkFinalState(list)==false) return false;
         
-        if(node.getDataSize()>0){
-            for(int i = 0; i < node.getDataSize(); i++){
-                int pid = node.getInt(i);
-                Particle p = new Particle();
-                if(pid!=0){
-                    p.initParticle(pid, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-                } else {
-                    p.initParticleWithPidMassSquare(pid, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-                }
-                list.add(p);
-            }
-            list.setStatusWord(DataManager.FORWARD);
-            if(eventFilterForward.checkFinalState(list)==false) return false;
-            list.setStatusWord(DataManager.CENTREAL);
-            if(eventFilterCentral.checkFinalState(list)==false) return false;
-            list.setStatusWord(DataManager.TAGGER);
-            if(eventFilterTagger.checkFinalState(list)==false) return false;
-            list.setStatusWord(DataManager.ANY);
-            return eventFilter.checkFinalState(list);
-        }
-        return false;
+        list.setStatusWord(DataManager.CENTREAL);
+        if(eventFilterCentral.checkFinalState(list)==false) return false;
+        
+        list.setStatusWord(DataManager.TAGGER);
+        if(eventFilterTagger.checkFinalState(list)==false) return false;
+        
+        list.setStatusWord(DataManager.ANY);
+        if( eventFilter.checkFinalState(list) ==false) return false;
+        
+        return true;
     }
 
     @Override
@@ -70,7 +61,12 @@ public class GenericWagon extends Wagon {
         this.eventFilterCentral.setFilter(filterStringCentral);
         this.eventFilterTagger.setFilter(filterStringTagger);
         
-        System.out.println(" WAGON CONFIGURATION : set filter = " + filterString);
+        System.out.println("SETTING FILTER [CENTRAL] : " + filterStringCentral);
+        System.out.println("SETTING FILTER [FORWARD] : " + filterStringForward);
+        System.out.println("SETTING FILTER [ TAGGER] : " + filterStringTagger);
+        System.out.println("SETTING FILTER [OVERALL] : " + filterString);
+        
+        //System.out.println(" WAGON CONFIGURATION : set filter = " + filterString);
         return true;
     }
     

@@ -1,0 +1,10 @@
+#--------------------------------------------
+# Configuration script to run trains
+#--------------------------------------------
+set servicesFile ${CLARA_HOME}/plugins/grapes/config/train.yaml
+set fileList     ${CLARA_HOME}/plugins/grapes/config/files.txt
+set inputDir     ${CLARA_HOME}/../../data/dst
+set outputDir    ${CLARA_HOME}/../../data/skimmed
+#------------
+set reportEvents 50000
+run local

@@ -14,6 +14,7 @@ import org.jlab.clara.engine.EngineData;
 import org.jlab.clara.engine.EngineDataType;
 import org.jlab.clara.engine.EngineStatus;
 import org.jlab.jnp.grapes.io.Clas12Types;
+import org.jlab.jnp.hipo.data.DataFrame;
 import org.jlab.jnp.hipo.data.HipoEvent;
 import org.jlab.jnp.hipo.data.HipoGroup;
 import org.jlab.jnp.hipo.schema.SchemaFactory;
@@ -37,13 +38,13 @@ public abstract class Wagon implements Engine {
     private  String    dataFilter = "X+:X-:Xn";
     
     
-    volatile SchemaFactory                          engineDictionary;
+    volatile SchemaFactory                          engineDictionary = new SchemaFactory();
     
     public Wagon(String name, String author, String version){        
         engineName    = name;
         engineAuthor  = author;
         engineVersion = version;
-        //engineDictionary.initFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
+        engineDictionary.initFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
     }
     
     abstract public boolean processDataEvent(HipoEvent event);
@@ -51,6 +52,7 @@ public abstract class Wagon implements Engine {
     
     @Override
     public EngineData configure(EngineData config) {
+        
         String mt = config.getMimeType();
         System.out.println(" CONFIGURATION " + this.engineName + " : type = " + mt );
         String engineConfiguration = (String) config.getData();
@@ -71,6 +73,31 @@ public abstract class Wagon implements Engine {
         
         //System.out.println(" DATA TYPE = [" + mt + "]");
         HipoEvent hipoEvent = null;
+        
+        if(mt.compareTo("binary/data-hipo-frame")==0){
+            
+            DataFrame  frame = (DataFrame) input.getData();
+            int count = frame.getCount();
+            DataFrame  outFrame = new DataFrame(frame.getLength()+100, count);
+            for(int i = 0; i < count; i++){
+                byte[] data = frame.getEntry(i);
+                HipoEvent event = new HipoEvent(data);
+                event.setSchemaFactory(engineDictionary,false);
+                processStatus = processDataEvent(event);
+                if(processStatus==true){
+                    event.setEventStatusBit(id);
+                } else {
+                    event.unsetEventStatusBit(id);
+                }
+                outFrame.add(event.getDataBuffer());
+            }
+
+            output.setData(mt, outFrame);
+            return output;
+        }
+        
+        
+        
         if(mt.compareTo("binary/data-hipo")==0){
             try {
                 //ByteBuffer bb = (ByteBuffer) input.getData();
@@ -88,11 +115,6 @@ public abstract class Wagon implements Engine {
 
             try {
                 processStatus = processDataEvent(hipoEvent);
-                //ByteBuffer  bbo = hipoEvent.getDataByteBuffer();
-                //byte[] buffero = bbo.array();
-                //output.setData(mt, bbo);
-                //int status = hipoEvent.getEventStatus();
-                //System.out.println("[engine] event status = " + status);
                 if(processStatus==true){
                     hipoEvent.setEventStatusBit(id);
                 } else {
