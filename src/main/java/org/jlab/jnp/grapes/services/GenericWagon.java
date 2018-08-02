@@ -5,6 +5,7 @@
  */
 package org.jlab.jnp.grapes.services;
 
+import org.jlab.jnp.grapes.data.DataManager;
 import org.jlab.jnp.hipo.data.HipoEvent;
 import org.jlab.jnp.hipo.data.HipoNode;
 import org.jlab.jnp.physics.EventFilter;

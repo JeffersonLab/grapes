@@ -67,6 +67,7 @@ public abstract class Wagon implements Engine {
 
     @Override
     public EngineData execute(EngineData input) {
+        
         EngineData output = input;
         String mt = input.getMimeType();
         boolean  processStatus = false;
@@ -87,7 +88,7 @@ public abstract class Wagon implements Engine {
                 if(processStatus==true){
                     event.setEventStatusBit(id);
                 } else {
-                    event.unsetEventStatusBit(id);
+                    //event.unsetEventStatusBit(id);
                 }
                 outFrame.add(event.getDataBuffer());
             }
@@ -96,8 +97,7 @@ public abstract class Wagon implements Engine {
             return output;
         }
         
-        
-        
+                
         if(mt.compareTo("binary/data-hipo")==0){
             try {
                 //ByteBuffer bb = (ByteBuffer) input.getData();
@@ -118,7 +118,7 @@ public abstract class Wagon implements Engine {
                 if(processStatus==true){
                     hipoEvent.setEventStatusBit(id);
                 } else {
-                    hipoEvent.unsetEventStatusBit(id);
+                   // hipoEvent.unsetEventStatusBit(id);
                 }
                 
                 output.setData(mt, hipoEvent);

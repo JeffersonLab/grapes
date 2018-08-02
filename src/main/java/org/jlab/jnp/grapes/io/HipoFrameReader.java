@@ -54,6 +54,9 @@ public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
             DataFrame  frame = new DataFrame(1024*250,300);
             for(int i = 0; i < 50; i++){
                 HipoEvent  event = reader.readEvent(startEvent+i);
+                for(int s = 0; s < 32; s++){
+                    event.unsetEventStatusBit(s);
+                }
                 frame.add(event.getDataBuffer());
             }
             //System.out.println("FRAME-READER : count = " + frame.getCount());
