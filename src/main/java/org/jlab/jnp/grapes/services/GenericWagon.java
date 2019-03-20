@@ -6,8 +6,9 @@
 package org.jlab.jnp.grapes.services;
 
 import org.jlab.jnp.grapes.data.DataManager;
-import org.jlab.jnp.hipo.data.HipoEvent;
-import org.jlab.jnp.hipo.data.HipoNode;
+import org.jlab.jnp.hipo4.data.Event;
+
+import org.jlab.jnp.hipo4.data.SchemaFactory;
 import org.jlab.jnp.physics.EventFilter;
 import org.jlab.jnp.physics.Particle;
 import org.jlab.jnp.physics.ParticleList;
@@ -30,9 +31,10 @@ public class GenericWagon extends Wagon {
     }
 
     @Override
-    public boolean processDataEvent(HipoEvent event) {        
+    public boolean processDataEvent(Event event, SchemaFactory factory) {        
         //HipoNode node = event.getNode(331, 1);
-        ParticleList list = DataManager.getParticleList(event);
+        
+        ParticleList list = DataManager.getParticleList(event,factory);
         
         list.setStatusWord(DataManager.FORWARD);
         if(eventFilterForward.checkFinalState(list)==false) return false;

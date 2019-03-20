@@ -14,7 +14,7 @@ import org.json.JSONObject;
  * (i.e. reads HIPO events from an input file)
  */
 public class HipoStreamReader extends AbstractEventReaderService<HipoReader> {
-
+    
     @Override
     protected HipoReader createReader(Path file, JSONObject opts)
             throws EventReaderException {

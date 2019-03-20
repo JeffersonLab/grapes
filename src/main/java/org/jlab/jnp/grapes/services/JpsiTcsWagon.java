@@ -1,10 +1,11 @@
 package org.jlab.jnp.grapes.services;
 
-import org.jlab.jnp.hipo.data.HipoNode;
-import org.jlab.jnp.hipo.data.HipoEvent;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.jlab.jnp.hipo4.data.Event;
+import org.jlab.jnp.hipo4.data.SchemaFactory;
 
 /**
  * 
@@ -32,9 +33,9 @@ public class JpsiTcsWagon extends Wagon {
     }
 
     @Override
-    public boolean processDataEvent(HipoEvent event) {
+    public boolean processDataEvent(Event event, SchemaFactory factory) {
 
-        if (!event.hasGroup("REC::Particle") ||
+       /* if (!event.hasGroup("REC::Particle") ||
             !event.hasGroup("REC::Calorimeter")) return false;
 
         // REC::Particle:
@@ -113,11 +114,11 @@ public class JpsiTcsWagon extends Wagon {
 
         // J/Psi, high-momentum mu+mu-:
         if (mumHiCandi.size()>0 && mupHiCandi.size()>0) return true;
-        
+        */
         return false;
     }
 
-    private HashMap<Integer,ArrayList<Integer>> mapByIndex(HipoNode indices) {
+    /*private HashMap<Integer,ArrayList<Integer>> mapByIndex(HipoNode indices) {
         HashMap<Integer,ArrayList<Integer>> map=new HashMap<Integer,ArrayList<Integer>>();
         for (int ii=0; ii<indices.getDataSize(); ii++) {
             final int index = indices.getInt(ii);
@@ -125,8 +126,8 @@ public class JpsiTcsWagon extends Wagon {
             map.get(index).add(ii);
         }
         return map;
-    }
-
+    }*/
+    /*
     private class ECAL {
         private float epcal=-1;
         private float eecin=-1;
@@ -167,5 +168,5 @@ public class JpsiTcsWagon extends Wagon {
         final float pz = event.getNode(331,4).getFloat(ipart);
         return (float)Math.sqrt(px*px + py*py + pz*pz);
     }
-
+    */
 }

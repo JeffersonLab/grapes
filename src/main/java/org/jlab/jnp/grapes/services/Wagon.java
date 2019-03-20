@@ -14,11 +14,12 @@ import org.jlab.clara.engine.EngineData;
 import org.jlab.clara.engine.EngineDataType;
 import org.jlab.clara.engine.EngineStatus;
 import org.jlab.jnp.grapes.io.Clas12Types;
-import org.jlab.jnp.hipo.data.DataFrame;
-import org.jlab.jnp.hipo.data.HipoEvent;
-import org.jlab.jnp.hipo.data.HipoGroup;
-import org.jlab.jnp.hipo.schema.SchemaFactory;
+import org.jlab.jnp.hipo4.data.DataFrame;
+import org.jlab.jnp.hipo4.data.DataFrameBuilder;
+import org.jlab.jnp.hipo4.data.Event;
+import org.jlab.jnp.hipo4.data.SchemaFactory;
 import org.jlab.jnp.physics.ParticleList;
+import org.jlab.jnp.utils.file.FileUtils;
 import org.jlab.jnp.utils.json.Json;
 import org.jlab.jnp.utils.json.JsonObject;
 
@@ -44,10 +45,11 @@ public abstract class Wagon implements Engine {
         engineName    = name;
         engineAuthor  = author;
         engineVersion = version;
-        engineDictionary.initFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
+        String path   = FileUtils.getEnvironmentPath("CLAS12DIR", "etc/bankdefs/hipo");
+        engineDictionary.initFromDirectory(path);
     }
     
-    abstract public boolean processDataEvent(HipoEvent event);
+    abstract public boolean processDataEvent(Event event, SchemaFactory factory);
     abstract public boolean init(String jsonString);
     
     @Override
@@ -73,36 +75,41 @@ public abstract class Wagon implements Engine {
         boolean  processStatus = false;
         
         //System.out.println(" DATA TYPE = [" + mt + "]");
-        HipoEvent hipoEvent = null;
+        Event hipoEvent = new Event();
         
         if(mt.compareTo("binary/data-hipo-frame")==0){
             
             DataFrame  frame = (DataFrame) input.getData();
-            int count = frame.getCount();
-            DataFrame  outFrame = new DataFrame(frame.getLength()+100, count);
+            int count = frame.getEntries();
+            int size  = frame.getEventBufferSize();
+            DataFrameBuilder  outBuilder = new DataFrameBuilder(count, size);
+            
             for(int i = 0; i < count; i++){
-                byte[] data = frame.getEntry(i);
-                HipoEvent event = new HipoEvent(data);
-                event.setSchemaFactory(engineDictionary,false);
-                processStatus = processDataEvent(event);
+                byte[] data = frame.getEventCopy(i);
+                hipoEvent.initFrom(data);                
+                //event.setSchemaFactory(engineDictionary,false);
+                processStatus = processDataEvent(hipoEvent,engineDictionary);
                 if(processStatus==true){
-                    event.setEventStatusBit(id);
+                    //event.setEventStatusBit(id);
+                    hipoEvent.setEventBitMask(id);
                 } else {
                     //event.unsetEventStatusBit(id);
                 }
-                outFrame.add(event.getDataBuffer());
+                outBuilder.addEvent(hipoEvent.getEventBuffer().array(), 
+                        0, hipoEvent.getEventBufferSize());
+                //outFrame.add(event.getDataBuffer());
             }
-
-            output.setData(mt, outFrame);
+            DataFrame  outframe = outBuilder.build();
+            output.setData(mt, outframe);
             return output;
         }
         
-                
+                /*
         if(mt.compareTo("binary/data-hipo")==0){
             try {
                 //ByteBuffer bb = (ByteBuffer) input.getData();
-                hipoEvent = (HipoEvent) input.getData();
-                hipoEvent.setSchemaFactory(engineDictionary, false);               
+               // hipoEvent = (HipoEvent) input.getData();
+               // hipoEvent.setSchemaFactory(engineDictionary, false);               
                 
                 //dataEventHipo.initDictionary(engineDictionary);
                 //dataEventHipo = new HipoDataEvent(bb.array(),this.engineDictionary);
@@ -128,7 +135,7 @@ public abstract class Wagon implements Engine {
                 output.setDescription(msg);
                 return output;
             }
-        }
+        }*/
         return output;
     }
 

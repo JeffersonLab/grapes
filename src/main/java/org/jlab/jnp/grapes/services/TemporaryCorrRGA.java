@@ -1,12 +1,11 @@
 package org.jlab.jnp.grapes.services;
 
-import org.jlab.jnp.hipo.data.HipoNode;
-import org.jlab.jnp.hipo.data.HipoGroup;
-import org.jlab.jnp.hipo.data.HipoEvent;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.jlab.jnp.hipo4.data.Event;
+import org.jlab.jnp.hipo4.data.SchemaFactory;
 
 /**
  * 
@@ -36,8 +35,8 @@ public class TemporaryCorrRGA extends Wagon {
     }
 
     @Override
-    public boolean processDataEvent(HipoEvent event) {
-
+    public boolean processDataEvent(Event event, SchemaFactory factory) {
+        /*
         if (!event.hasGroup("REC::Event") ||
             !event.hasGroup("REC::Particle") ||
             !event.hasGroup("REC::Calorimeter")) return retVal;
@@ -83,10 +82,10 @@ public class TemporaryCorrRGA extends Wagon {
             event.removeGroup(331);
             event.writeGroup(recParticle);
         }
-        
+        */
         return retVal;
     }
-
+    /*
     private HashMap<Integer,ArrayList<Integer>> mapByIndex(HipoNode indices) {
         HashMap<Integer,ArrayList<Integer>> map=new HashMap<Integer,ArrayList<Integer>>();
         for (int ii=0; ii<indices.getDataSize(); ii++) {
@@ -142,6 +141,6 @@ public class TemporaryCorrRGA extends Wagon {
         recParticle.getNode("px").setFloat(ipart,px*scale);
         recParticle.getNode("py").setFloat(ipart,py*scale);
         recParticle.getNode("pz").setFloat(ipart,pz*scale);
-    }
+    }*/
 
 }

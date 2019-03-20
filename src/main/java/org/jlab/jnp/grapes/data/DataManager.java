@@ -5,15 +5,13 @@
  */
 package org.jlab.jnp.grapes.data;
 
-import org.jlab.jnp.hipo.data.HipoEvent;
-import org.jlab.jnp.hipo.data.HipoGroup;
-import org.jlab.jnp.hipo.data.HipoNode;
-import org.jlab.jnp.hipo.io.HipoReader;
+import org.jlab.jnp.hipo4.data.Bank;
+import org.jlab.jnp.hipo4.data.Event;
+import org.jlab.jnp.hipo4.data.SchemaFactory;
 import org.jlab.jnp.physics.EventFilter;
 import org.jlab.jnp.physics.Particle;
 import org.jlab.jnp.physics.ParticleList;
 import org.jlab.jnp.physics.PhysicsEvent;
-import org.jlab.jnp.utils.file.FileUtils;
 
 /**
  *
@@ -38,10 +36,39 @@ public class DataManager {
     public static final String  CHERENKOV_BANK = "REC::Cherenkov";
         
     
-    public static ParticleList getParticleList(HipoEvent event){
+    public static ParticleList getParticleList(Event event, SchemaFactory factory){
         
+        Bank group = new Bank(factory.getSchema("REC::Particle"));
         ParticleList pList = new ParticleList();
-        if(event.hasGroup("REC::Particle")==false) return pList;
+        event.read(group);
+        
+        int nrows = group.getRows();
+        
+        for(int i = 0; i < nrows; i++){
+            int      pid = group.getInt("pid", i);
+            int   status = group.getInt("status", i);
+            int detector = DataManager.TAGGER;
+            if(status>=2000&&status<3000) detector = DataManager.FORWARD;
+            if(status>=4000) detector = DataManager.CENTREAL;
+            
+            Particle p = new Particle();
+            if(pid!=0){
+                p.initParticle(pid,
+                        group.getFloat("px",i), 
+                        group.getFloat("py",i), 
+                        group.getFloat("pz",i),
+                        group.getFloat("vx",i), 
+                        group.getFloat("vy",i), 
+                        group.getFloat("vz",i)
+                );
+            } else {
+                p.initParticleWithPidMassSquare(pid, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+            }
+            p.setStatus(detector);
+            pList.add(p);
+        }
+        
+        /*if(event.hasGroup("REC::Particle")==false) return pList;
         HipoGroup group  = event.getGroup("REC::Particle");
         HipoNode  nodePx = group.getNode("px");
         HipoNode  nodePy = group.getNode("py");
@@ -77,28 +104,24 @@ public class DataManager {
             }
             p.setStatus(detector);
             pList.add(p);
-        }
+        }*/
         return pList;
     }
     
     
     
-    public PhysicsEvent getPhysicsEvent(double energy, HipoEvent event){
+    public PhysicsEvent getPhysicsEvent(double energy, Event event, SchemaFactory factory){
         
-        ParticleList pList = DataManager.getParticleList(event);
+        ParticleList pList = DataManager.getParticleList(event,factory);
         PhysicsEvent pEvent = new PhysicsEvent();
         for(int i = 0; i < pList.count(); i++){
             pEvent.addParticle(pList.get(i));            
-        }
-        
-        if(event.hasGroup(TOF_BANK)==true){
-            
-        }
+        }                
         return pEvent;
     }
     
     public static void main(String[] args){
-        HipoReader reader = new HipoReader();
+       /* HipoReader reader = new HipoReader();
         //reader.open( "/Users/gavalian/Work/Software/project-4a.0.0/data/dst/clas_run_3222.hipo");
         reader.open( "/Users/gavalian/Work/Software/project-4a.0.0/data/dst/clasrun_004013_all.hipo");
         
@@ -120,6 +143,6 @@ public class DataManager {
                 System.out.println("--------");
                 System.out.println(pList.toLundString());
             }
-        }
+        }*/
     }
 }

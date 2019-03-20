@@ -6,9 +6,7 @@ import org.jlab.clara.engine.EngineDataType;
 import org.jlab.jnp.hipo.data.HipoEvent;
 
 import java.nio.ByteBuffer;
-import org.jlab.jnp.hipo.data.DataFrame;
-import org.jlab.jnp.hipo4.baseio.RecordInputStream;
-import org.jlab.jnp.hipo4.baseio.RecordOutputStream;
+import org.jlab.jnp.hipo4.data.DataFrame;
 
 // TODO: put this in a common CLAS package
 // TODO: should bytes be copied?
@@ -34,13 +32,13 @@ public final class Clas12Types {
 
         @Override
         public ByteBuffer write(Object o) throws ClaraException {
-            DataFrame stream = (DataFrame) o;            
-            return stream.getByteBuffer();
+            DataFrame stream = (DataFrame) o;
+            return stream.getFrameBuffer();
         }
 
         @Override
         public Object read(ByteBuffer bb) throws ClaraException {
-            return new DataFrame(bb.array());
+            return new DataFrame(bb);
             //return new RecordInputStream(bb);
         }
         

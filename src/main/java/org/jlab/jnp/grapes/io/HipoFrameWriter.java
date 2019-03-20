@@ -9,9 +9,9 @@ import java.nio.file.Path;
 import org.jlab.clara.engine.EngineDataType;
 import org.jlab.clara.std.services.AbstractEventWriterService;
 import org.jlab.clara.std.services.EventWriterException;
-import org.jlab.jnp.hipo.data.DataFrame;
-import org.jlab.jnp.hipo.data.HipoEvent;
-import org.jlab.jnp.hipo.io.HipoWriterStream;
+import org.jlab.jnp.hipo4.data.DataFrame;
+import org.jlab.jnp.hipo4.data.Event;
+import org.jlab.jnp.hipo4.io.HipoWriterStream;
 import org.jlab.jnp.utils.file.FileUtils;
 import org.json.JSONObject;
 
@@ -66,12 +66,16 @@ public class HipoFrameWriter extends AbstractEventWriterService<HipoWriterStream
         try {
             DataFrame  dataFrame = (DataFrame) event;
             
-            int count = dataFrame.getCount();
+            int count = dataFrame.getEntries();
+            Event  hipoEvent = new Event();
+            
             for(int i = 0; i < count; i++){
-                byte[] buffer = dataFrame.getEntry(i);
-                HipoEvent  hipoEvent = new HipoEvent(buffer);
+                
+                byte[] buffer = dataFrame.getEventCopy(i);
+                hipoEvent.initFrom(buffer);
+                
                 for(int k = 0; k < 32; k++){
-                    int status = hipoEvent.getEventStatusBit(k);
+                    int status = hipoEvent.getEventBitMask(k);
                     if(status>0) {                 
                         writer.writeEvent(k,hipoEvent);
                     }

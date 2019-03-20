@@ -6,7 +6,8 @@
 package org.jlab.jnp.grapes.services;
 
 import org.jlab.jnp.grapes.data.DataManager;
-import org.jlab.jnp.hipo.data.HipoEvent;
+import org.jlab.jnp.hipo4.data.Event;
+import org.jlab.jnp.hipo4.data.SchemaFactory;
 import org.jlab.jnp.physics.ParticleList;
 
 /**
@@ -20,8 +21,8 @@ public class CustomWagon extends Wagon {
     }
     
     @Override
-    public boolean processDataEvent(HipoEvent event) {
-        ParticleList pl = DataManager.getParticleList(event);
+    public boolean processDataEvent(Event event, SchemaFactory factory) {
+        ParticleList pl = DataManager.getParticleList(event,factory);
         if(pl.countByCharge(-1)<1) return false;
         if(pl.countByCharge(+1)<1) return false;
         if(pl.countByChargeMinMom(-1, 1.5)<1) return false;
