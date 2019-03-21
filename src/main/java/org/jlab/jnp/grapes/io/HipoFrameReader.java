@@ -22,8 +22,8 @@ import org.json.JSONObject;
  */
 public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
     
-    private int maxEventsFrame = 30;
-    private int maxSizeFrame   = 400*1024;
+    private int maxEventsFrame = 10;
+    private int maxSizeFrame   = 1024*1024;
     
     
     public void setMaxEvents(int __nevents){ maxEventsFrame = __nevents;}

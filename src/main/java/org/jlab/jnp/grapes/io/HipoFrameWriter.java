@@ -52,7 +52,7 @@ public class HipoFrameWriter extends AbstractEventWriterService<HipoWriterStream
     private String getSchemaDirectory(JSONObject opts) {
         return opts.has(CONF_SCHEMA)
                 ? opts.getString(CONF_SCHEMA)
-                : FileUtils.getEnvironmentPath("CLAS12DIR", "etc/bankdefs/hipo");
+                : FileUtils.getEnvironmentPath("CLAS12DIR", "etc/bankdefs/hipo4");
     }
 
 

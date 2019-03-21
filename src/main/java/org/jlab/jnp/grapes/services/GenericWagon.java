@@ -34,6 +34,8 @@ public class GenericWagon extends Wagon {
     public boolean processDataEvent(Event event, SchemaFactory factory) {        
         //HipoNode node = event.getNode(331, 1);
         
+        //return true;
+        
         ParticleList list = DataManager.getParticleList(event,factory);
         
         list.setStatusWord(DataManager.FORWARD);

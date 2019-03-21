@@ -45,7 +45,7 @@ public abstract class Wagon implements Engine {
         engineName    = name;
         engineAuthor  = author;
         engineVersion = version;
-        String path   = FileUtils.getEnvironmentPath("CLAS12DIR", "etc/bankdefs/hipo");
+        String path   = FileUtils.getEnvironmentPath("CLAS12DIR", "etc/bankdefs/hipo4");
         engineDictionary.initFromDirectory(path);
     }
     
