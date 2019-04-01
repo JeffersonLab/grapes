@@ -14,4 +14,4 @@ cp config/train.yaml grapes-$VERSION/config/.
 tar -cf grapes-$VERSION.tar grapes-$VERSION
 gzip grapes-$VERSION.tar
 scp grapes-$VERSION.tar.gz clas12@ifarm65:/group/clas/www/clasweb/html/clas12offline/distribution/grapes/
-rm -rf grapes-$VERSION grapes-$VERSION.tar.gz
+#rm -rf grapes-$VERSION grapes-$VERSION.tar.gz
