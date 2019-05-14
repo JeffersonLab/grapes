@@ -1,11 +1,14 @@
 package org.jlab.jnp.grapes.services;
 
+
+
 import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.Event;
 import org.jlab.jnp.hipo4.data.SchemaFactory;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+//import org.jlab.jnp.hipo4.data.Event;
+//import org.jlab.jnp.hipo4.data.SchemaFactory;
 
 /**
  * 
@@ -22,15 +25,6 @@ public class JpsiTcsWagon extends Wagon {
     static final float MIP_PCAL_MAX = 0.045f;
     static final float MOM_HIGH = 2.0f;
     
-    ArrayList<Integer> eleCandi = new ArrayList<>();
-    ArrayList<Integer> posCandi = new ArrayList<>();
-    ArrayList<Integer> mupCandi = new ArrayList<>();
-    ArrayList<Integer> mumCandi = new ArrayList<>();
-    ArrayList<Integer> eleHiCandi = new ArrayList<>();
-    ArrayList<Integer> posHiCandi = new ArrayList<>();
-    ArrayList<Integer> mupHiCandi = new ArrayList<>();
-    ArrayList<Integer> mumHiCandi = new ArrayList<>();
-
     public JpsiTcsWagon(){
         super("JpsiTcsWagon","baltzell","0.2");
     }
@@ -67,10 +61,10 @@ public class JpsiTcsWagon extends Wagon {
         HashMap<Integer,ArrayList<Integer>> part2calo = this.mapByIndex(calorimeters);
         
         int npos=0,nposFD=0;
-        eleCandi.clear();
-        posCandi.clear();
-        mupCandi.clear();
-        mumCandi.clear();
+        ArrayList<Integer> eleCandi = new ArrayList<>();
+        ArrayList<Integer> posCandi = new ArrayList<>();
+        ArrayList<Integer> mupCandi = new ArrayList<>();
+        ArrayList<Integer> mumCandi = new ArrayList<>();
 
         for (int ipart=0; ipart<particles.getRows(); ipart++) {
            
@@ -118,10 +112,10 @@ public class JpsiTcsWagon extends Wagon {
         if (mumCandi.size()>0 && mupCandi.size()>0 && nposFD>1) return true;
 
         // e/mu candidates with "high" momentum:
-        eleHiCandi.clear();
-        posHiCandi.clear();
-        mupHiCandi.clear();
-        mumHiCandi.clear();
+        ArrayList<Integer> eleHiCandi = new ArrayList<>();
+        ArrayList<Integer> posHiCandi = new ArrayList<>();
+        ArrayList<Integer> mupHiCandi = new ArrayList<>();
+        ArrayList<Integer> mumHiCandi = new ArrayList<>();
         for (int ii : eleCandi) if (this.getMomentum(ii,particles) > MOM_HIGH) eleHiCandi.add(ii);
         for (int ii : posCandi) if (this.getMomentum(ii,particles) > MOM_HIGH) posHiCandi.add(ii);
         for (int ii : mumCandi) if (this.getMomentum(ii,particles) > MOM_HIGH) mumHiCandi.add(ii);
