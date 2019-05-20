@@ -48,7 +48,10 @@ public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
 
     @Override
     public int readEventCount() throws EventReaderException {
-        return reader.getEventCount()/this.maxEventsFrame;
+        int numberOfEvents = reader.getEventCount()/this.maxEventsFrame;
+        int leftOver       = reader.getEventCount()%this.maxEventsFrame;
+        if(leftOver>0) numberOfEvents++;
+        return numberOfEvents;//reader.getEventCount()/this.maxEventsFrame;
     }
 
     @Override
@@ -63,11 +66,13 @@ public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
             DataFrameBuilder builder = new DataFrameBuilder(this.maxEventsFrame,this.maxSizeFrame);
             Event            event   = new Event();
             for(int i = 0; i < this.maxEventsFrame; i++){
-                reader.nextEvent(event);
-                event.clearEventBitMask();
+                if(reader.hasNext()==true){
+                    reader.nextEvent(event);
+                    event.clearEventBitMask();
                 
-                builder.addEvent(event.getEventBuffer().array(), 0, 
-                        event.getEventBufferSize());
+                    builder.addEvent(event.getEventBuffer().array(), 0, 
+                            event.getEventBufferSize());
+                }
             }
             DataFrame  frame = builder.build();
             //System.out.println("FRAME-READER : count = " + frame.getCount());
