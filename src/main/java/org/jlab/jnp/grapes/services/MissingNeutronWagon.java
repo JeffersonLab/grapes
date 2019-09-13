@@ -34,6 +34,30 @@ public class MissingNeutronWagon extends Wagon {
         return true;
     }
 
+    private double getMass(final int pid) {
+        double mass=-1;
+        switch (Math.abs(pid)) {
+            case 11:
+                mass = 0.000511;
+                break;
+            case 211:
+                mass = 0.139570;
+                break;
+            case 321:
+                mass = 0.493677;
+                break;
+            case 2112:
+                mass = 0.939272;
+                break;
+            case 2212:
+                mass = 0.939565;
+                break;
+            default:
+                throw new RuntimeException("unknown pid: "+pid);
+        }
+        return mass;
+    }
+
     private double getMomentum(final int ipart, Bank particles) {
         final double px = particles.getFloat("px",ipart);
         final double py = particles.getFloat("py",ipart);
@@ -41,17 +65,17 @@ public class MissingNeutronWagon extends Wagon {
         return Math.sqrt(px*px + py*py + pz*pz);
     }
 
-    double getMissingMass(final int ipart1, final int ipart2, Bank particles) {
-	 
+    double getMissingMass(final int ipart1, final int ipart2, final double m1, final double m2, Bank particles) {
+	
         final double px1 = particles.getFloat("px",ipart1);
         final double py1 = particles.getFloat("py",ipart1);
         final double pz1 = particles.getFloat("pz",ipart1);
-        final double e1 = Math.sqrt(px1*px1 + py1*py1 + pz1*pz1);
+        final double e1 = Math.sqrt(px1*px1 + py1*py1 + pz1*pz1 + m1*m1);
 
         final double px2 = particles.getFloat("px",ipart2);
         final double py2 = particles.getFloat("py",ipart2);
         final double pz2 = particles.getFloat("pz",ipart2);
-        final double e2 = Math.sqrt(px2*px2 + py2*py2 + pz2*pz2);
+        final double e2 = Math.sqrt(px2*px2 + py2*py2 + pz2*pz2 + m2*m2);
 
         double missing_energy = BEAM_ENERGY + PROTON_MASS - (e1 + e2);
         double missing_px = px1 + px2;
@@ -107,7 +131,7 @@ public class MissingNeutronWagon extends Wagon {
 	    
         // keep if a high-momentum trigger e- and positive, with good missing mass:
         for (int jj : posHiCandi) {
-            final double mm = this.getMissingMass(0,jj,particles);
+            final double mm = this.getMissingMass(0,jj,0,0.13957,particles);
             if (mm>NEUTRON_MASS_LOW && mm<NEUTRON_MASS_HIGH) {
                 return true;
             }
