@@ -41,7 +41,7 @@ public class ElecFTkaonWagon extends Wagon {
 
 		for (int ii = 0; ii < bankRECFT.getRows(); ii++) {
 			pid = bankRECFT.getInt("pid", ii);
-			status = bankRECFT.getShort("status", ii);
+			status = (short) Math.abs(bankRECFT.getShort("status", ii));
 			
 			if (pid == 11 && (int) (status / 1000) == 1)
 				flag_FTelec = true;
