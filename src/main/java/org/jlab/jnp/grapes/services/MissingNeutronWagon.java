@@ -95,8 +95,9 @@ public class MissingNeutronWagon extends Wagon {
         if (particles.getRows()<1) return false;
         
         // electrons, negatives, and positives within momentum cuts:
-        ArrayList<Integer> negHiCandi = new ArrayList<>();
+        ArrayList<Integer> eleLowCandi = new ArrayList<>();
         ArrayList<Integer> posHiCandi = new ArrayList<>();
+        ArrayList<Integer> negHiCandi = new ArrayList<>();
         
         for (int ipart=0; ipart<particles.getRows(); ipart++) {
            
@@ -104,36 +105,40 @@ public class MissingNeutronWagon extends Wagon {
             final int status = particles.getInt("status",ipart);
             final boolean isFD = (int)(Math.abs(status)/1000) == 2;
 
-            // check that trigger particle is high-momentum electron:
-            if (ipart==0) {
-                if (!isFD || pid!=11 || 
-                    this.getMomentum(ipart,particles) < ELE_MOM_LOW ||
-                    this.getMomentum(ipart,particles) > ELE_MOM_HIGH) {
-                    return false;
-                }
+            if (!isFD) {
+                continue;
             }
-            // find other high-momentum pi+/e+:
-            else if (isFD && (pid==211 || pid==-11)) {
-                if (this.getMomentum(ipart,particles) > OTHER_MOM_LOW) {
-                    posHiCandi.add(ipart);
-                }
+
+            // low-momentum electron:
+            if (pid==11 && 
+                this.getMomentum(ipart,particles) > ELE_MOM_LOW &&
+                this.getMomentum(ipart,particles) < ELE_MOM_HIGH) {
+                eleLowCandi.add(ipart);
             }
-            // find other high-momentum pi-/e-:
-            else if (isFD && (pid==-211 || pid==11)) {
-                if (this.getMomentum(ipart,particles) > OTHER_MOM_LOW) {
-                    negHiCandi.add(ipart);
-                }
+
+            // high-momentum pi+/e+:
+            else if ( (pid==211 || pid==-11) &&
+                     this.getMomentum(ipart,particles) > OTHER_MOM_LOW) {
+                posHiCandi.add(ipart);
+            }
+            
+            // high-momentun pi-/e-:
+            else if ( (pid==-211 || pid==11) &&
+                     this.getMomentum(ipart,particles) > OTHER_MOM_LOW) {
+                negHiCandi.add(ipart);
             }
         }
 
-        // keep if a high-momentum trigger-e- and negative:
-        if (!negHiCandi.isEmpty()) return true;
-	    
-        // keep if a high-momentum trigger e- and positive, with good missing mass:
+        // keep if a low-momentum e- and high momentum negative:
+        if (!eleLowCandi.isEmpty() && !negHiCandi.isEmpty()) return true;
+
+        // keep if a low momentum e- and high momentum positive, with good missing mass:
         for (int jj : posHiCandi) {
-            final double mm = this.getMissingMass(0,jj,0,0.13957,particles);
-            if (mm>NEUTRON_MASS_LOW && mm<NEUTRON_MASS_HIGH) {
-                return true;
+            for (int kk : eleLowCandi) {
+                final double mm = this.getMissingMass(kk,jj,0,0.13957,particles);
+                if (mm>NEUTRON_MASS_LOW && mm<NEUTRON_MASS_HIGH) {
+                    return true;
+                }
             }
         }
 
