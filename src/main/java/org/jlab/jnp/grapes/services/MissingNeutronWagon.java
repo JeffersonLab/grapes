@@ -19,8 +19,9 @@ public class MissingNeutronWagon extends Wagon {
     static final double BEAM_ENERGY = 10.6f;
     static final double PROTON_MASS = 0.938f;
     static final double ELE_MOM_LOW = 0.5f;
-    static final double ELE_MOM_HIGH = 4.5f;
-    static final double OTHER_MOM_LOW = 5.0f;
+    static final double ELE_MOM_HIGH = 7.5f;
+    static final double POS_MOM_LOW = 3.5f;
+    static final double NEG_MOM_LOW = 5.0f;
     static final double NEUTRON_MASS_LOW = 0.7f;
     static final double NEUTRON_MASS_HIGH = 1.3f;
     
@@ -118,19 +119,19 @@ public class MissingNeutronWagon extends Wagon {
 
             // high-momentum pi+/e+:
             else if ( (pid==211 || pid==-11) &&
-                     this.getMomentum(ipart,particles) > OTHER_MOM_LOW) {
+                     this.getMomentum(ipart,particles) > POS_MOM_LOW) {
                 posHiCandi.add(ipart);
             }
             
             // high-momentun pi-/e-:
             else if ( (pid==-211 || pid==11) &&
-                     this.getMomentum(ipart,particles) > OTHER_MOM_LOW) {
+                     this.getMomentum(ipart,particles) > NEG_MOM_LOW) {
                 negHiCandi.add(ipart);
             }
         }
 
         // keep if a low-momentum e- and high momentum negative:
-        if (!eleLowCandi.isEmpty() && !negHiCandi.isEmpty()) return true;
+        if (eleLowCandi.size()>1 || (!eleLowCandi.isEmpty() && !negHiCandi.isEmpty())) return true;
 
         // keep if a low momentum e- and high momentum positive, with good missing mass:
         for (int jj : posHiCandi) {
