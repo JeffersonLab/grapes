@@ -35,9 +35,9 @@ public abstract class Wagon implements Engine {
     String             engineVersion     = "0.0";
     String             engineDescription = "CLARA Engine";
     
-    private  int               id = 0;
-    private  String    dataFilter = "X+:X-:Xn";
-    
+    private  int                  id = 0;
+    private  String       dataFilter = "X+:X-:Xn";
+    private  int     processedEvents = 0;
     
     volatile SchemaFactory                          engineDictionary = new SchemaFactory();
     
@@ -89,12 +89,16 @@ public abstract class Wagon implements Engine {
                 hipoEvent.initFrom(data);                
                 //event.setSchemaFactory(engineDictionary,false);
                 processStatus = processDataEvent(hipoEvent,engineDictionary);
+                if(processedEvents==0){
+                    hipoEvent.setEventBitMask(id);
+                }
                 if(processStatus==true){
                     //event.setEventStatusBit(id);
                     hipoEvent.setEventBitMask(id);
                 } else {
                     //event.unsetEventStatusBit(id);
                 }
+                processedEvents++;
                 outBuilder.addEvent(hipoEvent.getEventBuffer().array(), 
                         0, hipoEvent.getEventBufferSize());
                 //outFrame.add(event.getDataBuffer());
