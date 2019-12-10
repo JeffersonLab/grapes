@@ -2,7 +2,7 @@
 #=========================================
 # THIS IS LOCAL DISTRIBUTION SCRIPT
 #=========================================
-VERSION=2.1
+VERSION=2.4
 rm -rf grapes-$VERSION grapes-$VERSION.tar.gz
 mkdir -p grapes-$VERSION/lib/core
 mkdir -p grapes-$VERSION/lib/services
