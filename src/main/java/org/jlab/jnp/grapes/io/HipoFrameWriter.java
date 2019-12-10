@@ -26,6 +26,7 @@ public class HipoFrameWriter extends AbstractEventWriterService<HipoWriterStream
     
     private static final String CONF_COMPRESSION = "compression";
     private static final String CONF_SCHEMA = "schema_dir";
+    private static final String CONF_FILTER = "filter";
     private List<Bank>       schemaBankList = new ArrayList<Bank>();
     
     @Override
@@ -40,13 +41,21 @@ public class HipoFrameWriter extends AbstractEventWriterService<HipoWriterStream
             writer.getSchemaFactory().initFromDirectory(getSchemaDirectory(opts));
             //for(int i = 0; i < 5; i++){
             //    writer.addWriter(i, file.toString());
-            //}            
+            //}
+            /*            
             if(opts.has(CONF_SCHEMA)){
                 System.out.println("\n***************** BANK FILTERING IS ENABLED *******************\n");
                 int schemaSize = writer.getSchemaFactory().getSchemaList().size();
                 for(int i = 0; i < schemaSize; i++){
                     Bank dataBank = new Bank(writer.getSchemaFactory().getSchemaList().get(i));
                     schemaBankList.add(dataBank);
+                }
+            }*/
+            String[] filters = getFilterString(opts);
+            if(filters.length>0){
+                for(int i = 0; i < filters.length; i+=2){
+                    int order = Integer.parseInt(filters[i]);
+                    writer.addEventFilter(order, filters[i+1]);                    
                 }
             }
             writer.setFileName(file.toString());
@@ -67,7 +76,12 @@ public class HipoFrameWriter extends AbstractEventWriterService<HipoWriterStream
                 : FileUtils.getEnvironmentPath("CLAS12DIR", "etc/bankdefs/hipo4");
     }
 
-
+    private String[] getFilterString(JSONObject opts){
+        if(opts.has(CONF_FILTER)==false) return new String[0];
+        String filterString = opts.getString(CONF_FILTER);
+        return filterString.split("-");
+    }
+    
     @Override
     protected void closeWriter() {
         writer.close();
@@ -92,7 +106,7 @@ public class HipoFrameWriter extends AbstractEventWriterService<HipoWriterStream
                 if(eventTag==1){ 
                     writer.writeEventAll(hipoEvent);
                 } else {
-                    if(this.schemaBankList.size()>0){
+                   /* if(this.schemaBankList.size()>0){
                         Event reduced = hipoEvent.reduceEvent(schemaBankList);
                         for(int k = 0; k < 32; k++){
                             int status = hipoEvent.getEventBitMask(k);
@@ -107,7 +121,13 @@ public class HipoFrameWriter extends AbstractEventWriterService<HipoWriterStream
                                 writer.writeEvent(k,hipoEvent);
                             }
                         }
-                    }
+                    }*/
+                   for(int k = 0; k < 32; k++){
+                            int status = hipoEvent.getEventBitMask(k);
+                            if(status>0) {                 
+                                writer.writeEvent(k,hipoEvent);
+                            }
+                   }
                 }
             }
             

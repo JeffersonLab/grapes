@@ -50,7 +50,6 @@ public class HipoStreamWriter extends AbstractEventWriterService<HipoWriterStrea
                 : FileUtils.getEnvironmentPath("CLAS12DIR", "etc/bankdefs/hipo");
     }
 
-
     @Override
     protected void closeWriter() {
         writer.close();

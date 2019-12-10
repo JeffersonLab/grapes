@@ -15,7 +15,11 @@ services:
   - class: org.jlab.jnp.grapes.services.GenericWagon
     name: PIONPID
 configuration:
-  services:
+  io-services:
+    writer:
+      compression: 2
+      filter: 1-REC::*-7-REC::*-3-*
+services:
     JPSITCS:
       id: 7
     PIONS:
