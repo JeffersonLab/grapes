@@ -13,6 +13,7 @@ import org.jlab.clara.std.services.EventReaderException;
 import org.jlab.jnp.hipo4.data.DataFrame;
 import org.jlab.jnp.hipo4.data.DataFrameBuilder;
 import org.jlab.jnp.hipo4.data.Event;
+import org.jlab.jnp.hipo4.data.Node;
 import org.jlab.jnp.hipo4.io.HipoReader;
 import org.json.JSONObject;
 
@@ -68,6 +69,8 @@ public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
             
             if(eventNumber==0){
                 event.reset();
+                Node  control = new Node(1001,1, new int[]{1001,1});
+                event.write(control);
                 event.setEventTag(1001);
                 builder.addEvent(event.getEventBuffer().array(), 0, 
                             event.getEventBufferSize());
