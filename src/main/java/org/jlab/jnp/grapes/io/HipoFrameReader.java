@@ -65,6 +65,14 @@ public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
             int startEvent = eventNumber*this.maxEventsFrame;
             DataFrameBuilder builder = new DataFrameBuilder(this.maxEventsFrame,this.maxSizeFrame);
             Event            event   = new Event();
+            
+            if(eventNumber==0){
+                event.reset();
+                event.setEventTag(1001);
+                builder.addEvent(event.getEventBuffer().array(), 0, 
+                            event.getEventBufferSize());
+            }
+            
             for(int i = 0; i < this.maxEventsFrame; i++){
                 if(reader.hasNext()==true){
                     reader.nextEvent(event);

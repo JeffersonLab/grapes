@@ -86,19 +86,29 @@ public abstract class Wagon implements Engine {
             
             for(int i = 0; i < count; i++){
                 byte[] data = frame.getEventCopy(i);
-                hipoEvent.initFrom(data);                
+                hipoEvent.initFrom(data);
+                
+                
                 //event.setSchemaFactory(engineDictionary,false);
                 processStatus = processDataEvent(hipoEvent,engineDictionary);
                 if(processedEvents==0){
                     hipoEvent.setEventBitMask(id);
                 }
+                
                 if(processStatus==true){
                     //event.setEventStatusBit(id);
                     hipoEvent.setEventBitMask(id);
                 } else {
                     //event.unsetEventStatusBit(id);
                 }
+                
+                if(hipoEvent.getEventTag()==1001){
+                    hipoEvent.setEventBitMask(id);
+                    hipoEvent.setEventTag(0);
+                }
+                
                 processedEvents++;
+                                
                 outBuilder.addEvent(hipoEvent.getEventBuffer().array(), 
                         0, hipoEvent.getEventBufferSize());
                 //outFrame.add(event.getDataBuffer());
