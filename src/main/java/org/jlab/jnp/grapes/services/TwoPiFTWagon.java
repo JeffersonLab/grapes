@@ -39,7 +39,6 @@ public class TwoPiFTWagon extends Wagon {
 		int     nel  = 0;
                 int     npos = 0;
                 int     nneg = 0;
-                int     nneu = 0;
                 
 
 		for (int ii = 0; ii < bankRECFT.getRows(); ii++) {
@@ -48,12 +47,13 @@ public class TwoPiFTWagon extends Wagon {
 			int status = bankRECFT.getShort("status", ii);
 			
 			if (pid == 11 && status>-2000 && status<-1000) nel++; 
-			if (charge >0)    npos++;
-                        else if(charge<0) nneg++;
-                        else              nneu++;
+                        if(status>2000) {
+                            if (charge >0)    npos++;
+                            else if(charge<0) nneg++;
+                        }
 		}
 
-		if (nel==1 && npos>=1 && nneg>=1 && (npos+nneg)<=6) flag_2piFT=true;
+		if (nel==1 && npos>=1 && nneg>=1 && (npos+nneg)<=5) flag_2piFT=true;
                 
                 return flag_2piFT;
 	}
