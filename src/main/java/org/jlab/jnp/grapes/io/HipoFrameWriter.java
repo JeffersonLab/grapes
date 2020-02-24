@@ -122,6 +122,7 @@ public class HipoFrameWriter extends AbstractEventWriterService<HipoWriterStream
                             }
                         }
                     }*/
+                   hipoEvent.setEventTag(0);
                    for(int k = 0; k < 32; k++){
                             int status = hipoEvent.getEventBitMask(k);
                             if(status>0) {                 

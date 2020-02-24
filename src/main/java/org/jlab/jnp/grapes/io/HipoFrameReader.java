@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import org.jlab.clara.engine.EngineDataType;
 import org.jlab.clara.std.services.AbstractEventReaderService;
 import org.jlab.clara.std.services.EventReaderException;
+import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.DataFrame;
 import org.jlab.jnp.hipo4.data.DataFrameBuilder;
 import org.jlab.jnp.hipo4.data.Event;
@@ -69,11 +70,13 @@ public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
             
             if(eventNumber==0){
                 event.reset();
-                Node  control = new Node(1001,1, new int[]{1001,1});
-                event.write(control);
+                Bank  runConfig = new Bank(reader.getSchemaFactory().getSchema("RUN::config"),1);
+                //Node  control = new Node(1001,1, new int[]{1001,1});
+                event.write(runConfig);
                 event.setEventTag(1001);
                 builder.addEvent(event.getEventBuffer().array(), 0, 
                             event.getEventBufferSize());
+                System.out.println("[FRAMEREADER] --> COMPOSING START FILE EVENT...");
             }
             
             for(int i = 0; i < this.maxEventsFrame; i++){
@@ -81,8 +84,11 @@ public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
                     reader.nextEvent(event);
                     event.clearEventBitMask();
                 
-                    builder.addEvent(event.getEventBuffer().array(), 0, 
+                    boolean status = builder.addEvent(event.getEventBuffer().array(), 0, 
                             event.getEventBufferSize());
+                    if(status==false){
+                        System.out.println("[HipoFrameReader] >>>>>> out of space on event # " + i + " from banch # " + eventNumber);
+                    }
                 }
             }
             DataFrame  frame = builder.build();

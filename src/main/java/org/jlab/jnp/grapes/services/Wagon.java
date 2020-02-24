@@ -5,20 +5,17 @@
  */
 package org.jlab.jnp.grapes.services;
 
-import java.nio.ByteBuffer;
 import java.util.HashSet;
 import java.util.Set;
 import org.jlab.clara.base.ClaraUtil;
 import org.jlab.clara.engine.Engine;
 import org.jlab.clara.engine.EngineData;
 import org.jlab.clara.engine.EngineDataType;
-import org.jlab.clara.engine.EngineStatus;
 import org.jlab.jnp.grapes.io.Clas12Types;
 import org.jlab.jnp.hipo4.data.DataFrame;
 import org.jlab.jnp.hipo4.data.DataFrameBuilder;
 import org.jlab.jnp.hipo4.data.Event;
 import org.jlab.jnp.hipo4.data.SchemaFactory;
-import org.jlab.jnp.physics.ParticleList;
 import org.jlab.jnp.utils.file.FileUtils;
 import org.jlab.jnp.utils.json.Json;
 import org.jlab.jnp.utils.json.JsonObject;
@@ -104,7 +101,8 @@ public abstract class Wagon implements Engine {
                 
                 if(hipoEvent.getEventTag()==1001){
                     hipoEvent.setEventBitMask(id);
-                    hipoEvent.setEventTag(0);
+                    //hipoEvent.setEventTag(0);
+                    System.out.println("[WAGON] --> RECEIVED START FILE EVENT... MARKING : " + id);
                 }
                 
                 processedEvents++;
