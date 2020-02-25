@@ -30,30 +30,33 @@ public class TwoPiFTWagon extends Wagon {
 
 //		Bank bank = new Bank(factory.getSchema("REC::Particle"));
 		Bank bankRECFT = new Bank(factory.getSchema("RECFT::Particle"));
+		Bank bankREC   = new Bank(factory.getSchema("REC::Particle"));
 
 //		event.read(bank);
 
 		event.read(bankRECFT);
+		event.read(bankREC);
 
 		boolean flag_2piFT = false;
 		int     nel  = 0;
                 int     npos = 0;
                 int     nneg = 0;
                 
+                if(bankRECFT!= null && bankREC!=null) {
+                    for (int ii = 0; ii < bankRECFT.getRows(); ii++) {
+                            int pid    = bankRECFT.getInt("pid", ii);
+                            int charge = bankREC.getByte("charge", ii);
+                            int status = bankRECFT.getShort("status", ii);
 
-		for (int ii = 0; ii < bankRECFT.getRows(); ii++) {
-			int pid    = bankRECFT.getInt("pid", ii);
-			int charge = bankRECFT.getInt("pid", ii);
-			int status = bankRECFT.getShort("status", ii);
-			
-			if (pid == 11 && status>-2000 && status<-1000) nel++; 
-                        if(status>2000) {
-                            if (charge >0)    npos++;
-                            else if(charge<0) nneg++;
-                        }
-		}
+                            if (pid == 11 && status>-2000 && status<-1000) nel++; 
+                            if(status>2000) {
+                                if (charge >0)    npos++;
+                                else if(charge<0) nneg++;
+                            }
+                    }
 
-		if (nel==1 && npos>=1 && nneg>=1 && (npos+nneg)<=5) flag_2piFT=true;
+                    if (nel==1 && npos>=1 && nneg>=1 && (npos+nneg)<=4) flag_2piFT=true;
+                }
                 
                 return flag_2piFT;
 	}
