@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class TwoPiFTWagon extends Wagon {
 
 	public TwoPiFTWagon(){
-        super("ElecFTkaonWagon","devita","0.1");
+        super("TwoPiFTWagon","devita","0.1");
     }
 
 	@Override
@@ -55,7 +55,7 @@ public class TwoPiFTWagon extends Wagon {
                             }
                     }
 
-                    if (nel==1 && npos>=1 && nneg>=1 && (npos+nneg)<=4) flag_2piFT=true;
+                    if (nel==1 && npos>=1 && nneg>=1 && (npos+nneg)<=6) flag_2piFT=true;
                 }
                 
                 return flag_2piFT;
