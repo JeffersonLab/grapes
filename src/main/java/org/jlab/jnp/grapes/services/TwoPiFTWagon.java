@@ -46,16 +46,20 @@ public class TwoPiFTWagon extends Wagon {
                     for (int ii = 0; ii < bankRECFT.getRows(); ii++) {
                             int pid    = bankRECFT.getInt("pid", ii);
                             int charge = bankREC.getByte("charge", ii);
+                            double  px = bankREC.getFloat("px", ii);
+                            double  py = bankREC.getFloat("py", ii);
+                            double  pz = bankREC.getFloat("pz", ii);
+                            double   p = Math.sqrt(px*px+py*py+pz*pz);
                             int status = bankRECFT.getShort("status", ii);
 
-                            if (pid == 11 && status>-2000 && status<-1000) nel++; 
+                            if (pid == 11 && status>-2000 && status<-1000 && p>1) nel++; 
                             if(status>2000) {
                                 if (charge >0)    npos++;
                                 else if(charge<0) nneg++;
                             }
                     }
 
-                    if (nel==1 && npos>=1 && nneg>=1 && (npos+nneg)<=6) flag_2piFT=true;
+                    if (nel>=1 && npos>=1 && nneg>=1 && (npos+nneg)<=6) flag_2piFT=true;
                 }
                 
                 return flag_2piFT;
