@@ -59,7 +59,7 @@ public class TwoPiFTWagon extends Wagon {
                             }
                     }
 
-                    if (nel>=1 && npos>=1 && nneg>=1 && (npos+nneg)<=6) flag_2piFT=true;
+                    if (nel>=1 && (npos+nneg)>=2 && (npos+nneg)<=6) flag_2piFT=true;
                 }
                 
                 return flag_2piFT;
