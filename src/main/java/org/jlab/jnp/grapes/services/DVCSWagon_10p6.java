@@ -53,7 +53,7 @@ public class DVCSWagon_10p6 extends Wagon {
             boolean hasDVCS = false;
             if( RecPart!=null && RecPart.getRows()>2 ){
 
-                    for (int ie = 0; ie < RecPart.getRows()-2; ie++) {
+                    for (int ie = 0; ie < RecPart.getRows()-2 && !hasDVCS; ie++) {
                             int is_e     = RecPart.getInt("pid", ie);
                             double e_px  = RecPart.getFloat("px", ie);
                             double e_py  = RecPart.getFloat("py", ie);
@@ -63,7 +63,7 @@ public class DVCSWagon_10p6 extends Wagon {
                             double e_mom = Math.sqrt(e_px*e_px+e_py*e_py+e_pz*e_pz);
                             if( is_e==11 && e_stat>2000 && e_stat<4000 && e_mom>0.1*BeamEnergy ){
                                     VE = new LorentzVector(e_px,e_py,e_pz,e_mom);
-                                    for (int ip = ie+1; ip < RecPart.getRows()-1; ip++) {
+                                    for (int ip = ie+1; ip < RecPart.getRows()-1 && !hasDVCS; ip++) {
                                             int is_p     = RecPart.getInt("pid", ip);
                                             double p_px  = RecPart.getFloat("px", ip);
                                             double p_py  = RecPart.getFloat("py", ip);
@@ -71,9 +71,9 @@ public class DVCSWagon_10p6 extends Wagon {
                                             int p_stat   = Math.abs(RecPart.getShort("status", ip));
 
                                             if( is_p==2212 && p_stat>2000 ){
-                                                    double p_ene = Math.sqrt(p_px*p_px+p_py*p_py+p_pz*p_pz);
+                                                    double p_ene = Math.sqrt(p_px*p_px+p_py*p_py+p_pz*p_pz+TargetMass*TargetMass);
                                                     VP = new LorentzVector(p_px,p_py,p_pz,p_ene);
-                                                    for (int ig = ip+1; ig < RecPart.getRows(); ig++) {
+                                                    for (int ig = ip+1; ig < RecPart.getRows() && !hasDVCS; ig++) {
                                                             int is_g     = RecPart.getInt("pid", ig);
                                                             double g_px  = RecPart.getFloat("px", ig);
                                                             double g_py  = RecPart.getFloat("py", ig);
