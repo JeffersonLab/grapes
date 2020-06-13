@@ -2,7 +2,6 @@ package org.jlab.jnp.grapes.services;
 
 import java.io.*;
 import java.util.*;
-import java.text.SimpleDateFormat;
 
 import org.jlab.jnp.physics.Vector3;
 import org.jlab.jnp.physics.LorentzVector;
