@@ -17,16 +17,16 @@ import org.jlab.jnp.hipo4.data.SchemaFactory;
 * @author fxgirod
 */
  
-public class DVPipPimPWagon_10p6 extends Wagon {
+public class DVKpKmPWagon_10p6 extends Wagon {
  
     static final double BeamEnergy = 10.603f;
     static final double TargetMass = 0.93827f;
-    static final double PionMass   = 0.13957f;
+    static final double KaonMass   = 0.493677f;
 
     public LorentzVector VB, VT;
 
-    public DVPipPimPWagon_10p6() {
-        super("DVPipPimPWagon_10p6","fxgirod","0.0");
+    public DVKpKmPWagon_10p6() {
+        super("DVKpKmPWagon_10p6","fxgirod","0.0");
 
 	VB = new LorentzVector(0,0,BeamEnergy,BeamEnergy);
 	VT = new LorentzVector(0,0,0,TargetMass);
@@ -42,7 +42,7 @@ public class DVPipPimPWagon_10p6 extends Wagon {
 
     @Override
     public boolean init(String jsonString) {
-        System.out.println("DVPipPimPWagon_10p6 READY.");
+        System.out.println("DVKpKmPWagon_10p6 READY.");
         return true;
     }   
 
@@ -52,10 +52,10 @@ public class DVPipPimPWagon_10p6 extends Wagon {
 	    Bank RecPart = new Bank(factory.getSchema("REC::Particle"));
 	    event.read(RecPart);
 
-	    boolean hasDVPipPimP = false;
+	    boolean hasDVKapKamP = false;
 	    if( RecPart!=null && RecPart.getRows()>3 ){
 
-		    for (int ie = 0; ie < RecPart.getRows()-3 && !hasDVPipPimP; ie++) {
+		    for (int ie = 0; ie < RecPart.getRows()-3 && !hasDVKapKamP; ie++) {
 			    int is_e     = RecPart.getInt("pid", ie);
 			    double e_px  = RecPart.getFloat("px", ie);
 			    double e_py  = RecPart.getFloat("py", ie);
@@ -65,7 +65,7 @@ public class DVPipPimPWagon_10p6 extends Wagon {
 			    double e_mom = Math.sqrt(e_px*e_px+e_py*e_py+e_pz*e_pz);
 			    if( is_e==11 && e_stat>2000 && e_stat<4000 && e_mom>0.1*BeamEnergy ){
 				    LorentzVector VE = new LorentzVector(e_px,e_py,e_pz,e_mom);
-				    for (int ip = ie+1; ip < RecPart.getRows()-2 && !hasDVPipPimP; ip++) {
+				    for (int ip = ie+1; ip < RecPart.getRows()-2 && !hasDVKapKamP; ip++) {
 					    int is_p     = RecPart.getInt("pid", ip);
 					    double p_px  = RecPart.getFloat("px", ip);
 					    double p_py  = RecPart.getFloat("py", ip);
@@ -75,30 +75,30 @@ public class DVPipPimPWagon_10p6 extends Wagon {
 					    if( is_p==2212 && p_stat>2000 ){
 						    double p_ene = Math.sqrt(p_px*p_px+p_py*p_py+p_pz*p_pz+TargetMass*TargetMass);
 						    LorentzVector VP = new LorentzVector(p_px,p_py,p_pz,p_ene);
-						    for (int ipip = ip+1; ipip < RecPart.getRows()-1 && !hasDVPipPimP ; ipip++) {
-							    int is_pip     = RecPart.getInt("pid", ipip);
-							    double pip_px  = RecPart.getFloat("px", ipip);
-							    double pip_py  = RecPart.getFloat("py", ipip);
-							    double pip_pz  = RecPart.getFloat("pz", ipip);
-							    int pip_stat   = Math.abs(RecPart.getShort("status", ipip));
+						    for (int ikap = ip+1; ikap < RecPart.getRows()-1 && !hasDVKapKamP ; ikap++) {
+							    int is_kap     = RecPart.getInt("pid", ikap);
+							    double kap_px  = RecPart.getFloat("px", ikap);
+							    double kap_py  = RecPart.getFloat("py", ikap);
+							    double kap_pz  = RecPart.getFloat("pz", ikap);
+							    int kap_stat   = Math.abs(RecPart.getShort("status", ikap));
 
-							    double pip_ene = Math.sqrt(pip_px*pip_px+pip_py*pip_py+pip_pz*pip_pz+PionMass*PionMass);
-							    if( is_pip==211 && pip_stat>2000 && pip_stat<4000 && pip_ene>0.3){
-								    LorentzVector VPIP = new LorentzVector(pip_px,pip_py,pip_pz,pip_ene);
-								    for (int ipim = ipip+1; ipim < RecPart.getRows() && !hasDVPipPimP ; ipim++) {
-									    int is_pim     = RecPart.getInt("pid", ipim);
-									    double pim_px  = RecPart.getFloat("px", ipim);
-									    double pim_py  = RecPart.getFloat("py", ipim);
-									    double pim_pz  = RecPart.getFloat("pz", ipim);
-									    int pim_stat   = Math.abs(RecPart.getShort("status", ipim));
+							    double kap_ene = Math.sqrt(kap_px*kap_px+kap_py*kap_py+kap_pz*kap_pz+KaonMass*KaonMass);
+							    if( is_kap==321 && kap_stat>2000 && kap_stat<4000 && kap_ene>0.523){
+								    LorentzVector VKAP = new LorentzVector(kap_px,kap_py,kap_pz,kap_ene);
+								    for (int ikam = ikap+1; ikam < RecPart.getRows() && !hasDVKapKamP ; ikam++) {
+									    int is_kam     = RecPart.getInt("pid", ikam);
+									    double kam_px  = RecPart.getFloat("px", ikam);
+									    double kam_py  = RecPart.getFloat("py", ikam);
+									    double kam_pz  = RecPart.getFloat("pz", ikam);
+									    int kam_stat   = Math.abs(RecPart.getShort("status", ikam));
 
-									    double pim_ene = Math.sqrt(pim_px*pim_px+pim_py*pim_py+pim_pz*pim_pz+PionMass*PionMass);
-									    if( is_pim==-211 && pim_stat>2000 && pim_stat<4000 && pim_ene>0.3){
-										    LorentzVector VPIM = new LorentzVector(pim_px,pim_py,pim_pz,pim_ene);
+									    double kam_ene = Math.sqrt(kam_px*kam_px+kam_py*kam_py+kam_pz*kam_pz+KaonMass*KaonMass);
+									    if( is_kam==-211 && kam_stat>2000 && kam_stat<4000 && kam_ene>0.523){
+										    LorentzVector VKAM = new LorentzVector(kam_px,kam_py,kam_pz,kam_ene);
 
-										    LorentzVector VRHO0 = new LorentzVector(0,0,0,0);
-										    VRHO0.add(VPIP);
-										    VRHO0.add(VPIM);
+										    LorentzVector VPHI = new LorentzVector(0,0,0,0);
+										    VPHI.add(VKAP);
+										    VPHI.add(VKAM);
 
 										    LorentzVector Q = new LorentzVector(0,0,0,0);
 										    Q.add(VB);
@@ -110,29 +110,29 @@ public class DVPipPimPWagon_10p6 extends Wagon {
 										    if( -Q.mass2()>0.8 && W.mass()>1.8 ){
 											    LorentzVector VmissP = new LorentzVector(0,0,0,0);
 											    VmissP.add(W);
-											    VmissP.sub(VRHO0);
-											    LorentzVector VmissPIP = new LorentzVector(0,0,0,0);
-											    VmissPIP.add(W);
-											    VmissPIP.sub(VP);
-											    VmissPIP.sub(VPIM);
-											    LorentzVector VmissPIM = new LorentzVector(0,0,0,0);
-											    VmissPIM.add(W);
-											    VmissPIM.sub(VP);
-											    VmissPIM.sub(VPIP);
+											    VmissP.sub(VPHI);
+											    LorentzVector VmissKAP = new LorentzVector(0,0,0,0);
+											    VmissKAP.add(W);
+											    VmissKAP.sub(VP);
+											    VmissKAP.sub(VKAM);
+											    LorentzVector VmissKAM = new LorentzVector(0,0,0,0);
+											    VmissKAM.add(W);
+											    VmissKAM.sub(VP);
+											    VmissKAM.sub(VKAP);
 											    LorentzVector VmissAll = new LorentzVector(0,0,0,0);
-											    VmissAll.add(VmissPIM);
-											    VmissAll.sub(VPIM);
+											    VmissAll.add(VmissP);
+											    VmissAll.sub(VP);
 
-											    hasDVPipPimP = true
+											    hasDVKapKamP = true
 												    && VmissAll.e() > -0.5 && VmissAll.e() < 0.5
-												    && VmissAll.mass2() > -0.1 &&  VmissAll.mass2() < 0.1
-												    && VmissAll.px()*VmissAll.px() + VmissAll.py()*VmissAll.py() < 0.5
+												    && VmissAll.mass2() > -0.05 &&  VmissAll.mass2() < 0.05
+												    && VmissAll.px()*VmissAll.px() + VmissAll.py()*VmissAll.py() < 0.25
 												    && Vangle( VP.vect() , VmissP.vect() ) < 12
-												    && Vangle( VPIP.vect() , VmissPIP.vect() ) < 12
-												    && Vangle( VPIM.vect() , VmissPIM.vect() ) < 12
+												    && Vangle( VKAP.vect() , VmissKAP.vect() ) < 12
+												    && Vangle( VKAM.vect() , VmissKAM.vect() ) < 12
 												    && VmissP.mass2() > 0.5 && VmissP.mass2() < 1.5
-												    && VmissPIP.mass2() > -0.3 && VmissPIP.mass2() < 0.5
-												    && VmissPIM.mass2() > -0.3 && VmissPIM.mass2() < 0.5
+												    && VmissKAP.mass2() > 0.035 && VmissKAP.mass2() < 0.6
+												    && VmissKAM.mass2() > 0.035 && VmissKAM.mass2() < 0.6
 												    ;
 										    }
 									    }
@@ -146,6 +146,6 @@ public class DVPipPimPWagon_10p6 extends Wagon {
 
 		    }
 	    }
-	    return hasDVPipPimP;
+	    return hasDVKapKamP;
     }
 }

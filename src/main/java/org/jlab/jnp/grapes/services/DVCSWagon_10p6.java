@@ -22,7 +22,7 @@ public class DVCSWagon_10p6 extends Wagon {
     public LorentzVector VB, VT;
 
     public DVCSWagon_10p6() {
-        super("DVCSWagon","fxgirod","0.0");
+        super("DVCSWagon_10p6","fxgirod","0.0");
 
         VB = new LorentzVector(0,0,BeamEnergy,BeamEnergy);
         VT = new LorentzVector(0,0,0,TargetMass);
@@ -30,7 +30,7 @@ public class DVCSWagon_10p6 extends Wagon {
     
     @Override
     public boolean init(String jsonString) {
-        System.out.println("DVCSWagon READY.");
+        System.out.println("DVCSWagon_10p6 READY.");
         return true;
     }
 
