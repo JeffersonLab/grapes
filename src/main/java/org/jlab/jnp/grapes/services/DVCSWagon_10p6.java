@@ -4,9 +4,8 @@ import java.io.*;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
-import org.jlab.io.hipo.*;
-import org.jlab.clas.physics.Vector3;
-import org.jlab.clas.physics.LorentzVector;
+import org.jlab.jnp.physics.Vector3;
+import org.jlab.jnp.physics.LorentzVector;
 
 import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.Event;
