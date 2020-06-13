@@ -24,7 +24,13 @@ public class DVCSWagon extends BeamTargetWagon {
         VB = new LorentzVector(0,0,beamEnergy,beamEnergy);
         VT = new LorentzVector(0,0,0,targetMass);
     }
-    
+   
+    @Override
+    public boolean init(String jsonString) {
+        System.out.println("DVCSWagon READY.");
+        return true;
+    }   
+ 
     public double Vangle(Vector3 v1, Vector3 v2){
         double res=0;
         double l1 = v1.mag();
@@ -81,8 +87,6 @@ public class DVCSWagon extends BeamTargetWagon {
                                     W.add(this.VT);
                                     
                                     if( -Q.mass2()>0.8 && W.mass()>1.8 ){
-                                        //String strKine = String.format("kine : Q2=%1.2f , W=%1.2f",-Q.mass2(),W.mass());
-                                        //System.out.println("FOUND ELECTRON AND PROTON AND PHOTON , "+strKine);
                                         LorentzVector VmissP = new LorentzVector(0,0,0,0);
                                         VmissP.add(W);
                                         VmissP.sub(VG);
