@@ -16,13 +16,8 @@ import org.jlab.jnp.hipo4.data.SchemaFactory;
  
 public class DVPi0PWagon extends BeamTargetWagon {
  
-    public LorentzVector VB, VT;
-
     public DVPi0PWagon() {
         super("DVPi0PWagon","fxgirod","0.0");
-
-	VB = new LorentzVector(0,0,beamEnergy,beamEnergy);
-	VT = new LorentzVector(0,0,0,targetMass);
     }
 
     public double Vangle(Vector3 v1, Vector3 v2){ 
@@ -35,6 +30,9 @@ public class DVPi0PWagon extends BeamTargetWagon {
 
     @Override
     public boolean processDataEvent(Event event, SchemaFactory factory) {
+	    LorentzVector VB = new LorentzVector(0,0,beamEnergy,beamEnergy);
+	    LorentzVector VT = new LorentzVector(0,0,0,targetMass);
+
 
 	    Bank RecPart = new Bank(factory.getSchema("REC::Particle"));
 	    event.read(RecPart);
@@ -92,7 +90,7 @@ public class DVPi0PWagon extends BeamTargetWagon {
 										    Q.sub(VE);
 										    LorentzVector W = new LorentzVector(0,0,0,0);
 										    W.add(Q);
-										    W.add(this.VT);
+										    W.add(VT);
 
 										    double e_g1_angle = Vangle( VE.vect() , VG1.vect() );
 										    double e_g2_angle = Vangle( VE.vect() , VG2.vect() );

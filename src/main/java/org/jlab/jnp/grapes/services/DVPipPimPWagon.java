@@ -21,13 +21,8 @@ public class DVPipPimPWagon extends BeamTargetWagon {
  
     static final double PionMass   = 0.13957f;
 
-    public LorentzVector VB, VT;
-
     public DVPipPimPWagon() {
         super("DVPipPimPWagon","fxgirod","0.0");
-
-	VB = new LorentzVector(0,0,beamEnergy,beamEnergy);
-	VT = new LorentzVector(0,0,0,targetMass);
     }
 
     public double Vangle(Vector3 v1, Vector3 v2){ 
@@ -40,6 +35,8 @@ public class DVPipPimPWagon extends BeamTargetWagon {
 
     @Override
     public boolean processDataEvent(Event event, SchemaFactory factory) {
+	    LorentzVector VB = new LorentzVector(0,0,beamEnergy,beamEnergy);
+	    LorentzVector VT = new LorentzVector(0,0,0,targetMass);
 
 	    Bank RecPart = new Bank(factory.getSchema("REC::Particle"));
 	    event.read(RecPart);
@@ -97,7 +94,7 @@ public class DVPipPimPWagon extends BeamTargetWagon {
 										    Q.sub(VE);
 										    LorentzVector W = new LorentzVector(0,0,0,0);
 										    W.add(Q);
-										    W.add(this.VT);
+										    W.add(VT);
 
 										    if( -Q.mass2()>0.8 && W.mass()>1.8 ){
 											    LorentzVector VmissP = new LorentzVector(0,0,0,0);
