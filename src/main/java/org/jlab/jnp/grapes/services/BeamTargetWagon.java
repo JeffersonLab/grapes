@@ -24,14 +24,15 @@ public abstract class BeamTargetWagon extends Wagon {
     }
     
     @Override
-    public boolean init(String jsonString) {
+    public final boolean init(String jsonString) {
         JsonObject jsonObj = Json.parse(jsonString).asObject();
         beamEnergy = jsonObj.getDouble("beamEnergy",-1.0);
         targetPDG = jsonObj.getInt("targetPDG",0);
         if (beamEnergy>0 && targetPDG!=0) {
             targetMass = PDGDatabase.getParticleById(targetPDG).mass();
             if (targetMass>0) {
-                System.out.println(engineName +" READY.");
+		String beamTargetSetup = "EB="+beamEnergy+" , TID="+targetPDG+" , TM="+targetMass;
+                System.out.println(engineName +" READY with "+beamTargetSetup);
                 return true;
             }
         }

@@ -39,12 +39,6 @@ public class DVKpKmPWagon extends BeamTargetWagon {
     }
 
     @Override
-    public boolean init(String jsonString) {
-        System.out.println("DVKpKmPWagon READY.");
-        return true;
-    }   
-
-    @Override
     public boolean processDataEvent(Event event, SchemaFactory factory) {
 
 	    Bank RecPart = new Bank(factory.getSchema("REC::Particle"));

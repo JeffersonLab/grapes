@@ -25,12 +25,6 @@ public class DVCSWagon extends BeamTargetWagon {
         VT = new LorentzVector(0,0,0,targetMass);
     }
    
-    @Override
-    public boolean init(String jsonString) {
-        System.out.println("DVCSWagon READY.");
-        return true;
-    }   
- 
     public double Vangle(Vector3 v1, Vector3 v2){
         double res=0;
         double l1 = v1.mag();

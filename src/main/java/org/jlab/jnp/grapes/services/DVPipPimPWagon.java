@@ -39,12 +39,6 @@ public class DVPipPimPWagon extends BeamTargetWagon {
     }
 
     @Override
-    public boolean init(String jsonString) {
-        System.out.println("DVPipPimPWagon READY.");
-        return true;
-    }   
-
-    @Override
     public boolean processDataEvent(Event event, SchemaFactory factory) {
 
 	    Bank RecPart = new Bank(factory.getSchema("REC::Particle"));
