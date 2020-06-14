@@ -24,7 +24,7 @@ public abstract class BeamTargetWagon extends Wagon {
     }
     
     @Override
-    public boolean init(String jsonString) {
+    public final boolean init(String jsonString) {
         JsonObject jsonObj = Json.parse(jsonString).asObject();
         beamEnergy = jsonObj.getDouble("beamEnergy",-1.0);
         targetPDG = jsonObj.getInt("targetPDG",0);
