@@ -31,7 +31,8 @@ public abstract class BeamTargetWagon extends Wagon {
         if (beamEnergy>0 && targetPDG!=0) {
             targetMass = PDGDatabase.getParticleById(targetPDG).mass();
             if (targetMass>0) {
-                System.out.println(engineName +" READY.");
+		String beamTargetSetup = "EB="+beamEnergy+" , TID="+targetPDG+" , TM="+targetMass;
+                System.out.println(engineName +" READY with "+beamTargetSetup);
                 return true;
             }
         }
