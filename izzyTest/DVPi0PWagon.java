@@ -9,15 +9,15 @@ import org.jlab.jnp.hipo4.data.SchemaFactory;
 
 /**
  * 
- * DVPi0P Skimming
+ * DVEta Skimming
  *
  * @author fxgirod
  */
 
-public class DVPi0PWagon extends BeamTargetWagon {
+public class DVEtaWagon extends BeamTargetWagon {
 
-	public DVPi0PWagon() {
-		super("DVPi0PWagon","fxgirod","0.0");
+	public DVEtaWagon() {
+		super("DVEtaWagon","fxgirod","0.0");
 	}
 
 	public double Vangle(Vector3 v1, Vector3 v2){ 
@@ -88,7 +88,7 @@ public class DVPi0PWagon extends BeamTargetWagon {
 
 									double g1_mom = Math.sqrt(g1_px*g1_px+g1_py*g1_py+g1_pz*g1_pz);
 									if( g1_mom>0.15){
-										LorentzVector VG1 = new LorentzVector(g1_px,g1_py,g1_pz,g1_mom);
+										LorentzVector VG1 = new LorentzVector(g1_px,g1_py,g1_pz,g1_mom); // first gamma
 										for (int ig2 = ig1+1; ig2 < n_g && !hasDVPi0P ; ig2++) {
 											double g2_px  = RecPart.getFloat("px", g_ind[ig2]);
 											double g2_py  = RecPart.getFloat("py", g_ind[ig2]);
@@ -96,57 +96,100 @@ public class DVPi0PWagon extends BeamTargetWagon {
 
 											double g2_mom = Math.sqrt(g2_px*g2_px+g2_py*g2_py+g2_pz*g2_pz);
 											if( g2_mom>0.15){
-												LorentzVector VG2 = new LorentzVector(g2_px,g2_py,g2_pz,g2_mom);
+												LorentzVector VG2 = new LorentzVector(g2_px,g2_py,g2_pz,g2_mom); // second gamma
+												for (int ig3 = ig2+1; ig3 < n_g && !hasDVPi0P ; ig3++) {
+													double g3_px  = RecPart.getFloat("px", g_ind[ig3]);
+													double g3_py  = RecPart.getFloat("py", g_ind[ig3]);
+													double g3_pz  = RecPart.getFloat("pz", g_ind[ig3]);
 
-												LorentzVector VPI0 = new LorentzVector(0,0,0,0);
-												VPI0.add(VG1);
-												VPI0.add(VG2);
+													double g3_mom = Math.sqrt(g3_px*g3_px+g3_py*g3_py+g3_pz*g3_pz);
+													if( g3_mom>0.15){
+														LorentzVector VG3 = new LorentzVector(g3_px,g3_py,g3_pz,g3_mom); // third gamma
+														for (int ig4 = ig3+1; ig4 < n_g && !hasDVPi0P ; ig4++) {
+															double g4_px  = RecPart.getFloat("px", g_ind[ig4]);
+															double g4_py  = RecPart.getFloat("py", g_ind[ig4]);
+															double g4_pz  = RecPart.getFloat("pz", g_ind[ig4]);
 
-												LorentzVector Q = new LorentzVector(0,0,0,0);
-												Q.add(VB);
-												Q.sub(VE);
-												LorentzVector W = new LorentzVector(0,0,0,0);
-												W.add(Q);
-												W.add(VT);
+															double g4_mom = Math.sqrt(g4_px*g4_px+g4_py*g4_py+g4_pz*g4_pz);
+															if( g4_mom>0.15){
+																LorentzVector VG4 = new LorentzVector(g4_px,g4_py,g4_pz,g4_mom); // fourth gamma
+																for (int ig5 = ig4+1; ig5 < n_g && !hasDVPi0P ; ig5++) {
+																	double g5_px  = RecPart.getFloat("px", g_ind[ig5]);
+																	double g5_py  = RecPart.getFloat("py", g_ind[ig5]);
+																	double g5_pz  = RecPart.getFloat("pz", g_ind[ig5]);
 
-												double e_g1_angle = Vangle( VE.vect() , VG1.vect() );
-												double e_g2_angle = Vangle( VE.vect() , VG2.vect() );
-												double g1_g2_angle = Vangle( VG1.vect() , VG2.vect() );
+																	double g5_mom = Math.sqrt(g5_px*g5_px+g5_py*g5_py+g5_pz*g5_pz);
+																	if( g5_mom>0.15){
+																		LorentzVector VG5 = new LorentzVector(g5_px,g5_py,g5_pz,g5_mom); // fifth gamma
+																		for (int ig6 = ig5+1; ig6 < n_g && !hasDVPi0P ; ig6++) {
+																			double g6_px  = RecPart.getFloat("px", g_ind[ig6]);
+																			double g6_py  = RecPart.getFloat("py", g_ind[ig6]);
+																			double g6_pz  = RecPart.getFloat("pz", g_ind[ig6]);
 
-												if( -Q.mass2()>0.8 && W.mass()>1.8 && e_g1_angle>4 && e_g2_angle>4 && g1_g2_angle>1 ){
-													LorentzVector VmissP = new LorentzVector(0,0,0,0);
-													VmissP.add(W);
-													VmissP.sub(VPI0);
-													LorentzVector VmissPI0 = new LorentzVector(0,0,0,0);
-													VmissPI0.add(W);
-													VmissPI0.sub(VP);
-													LorentzVector VmissAll = new LorentzVector(0,0,0,0);
-													VmissAll.add(VmissPI0);
-													VmissAll.sub(VPI0);
+																			double g6_mom = Math.sqrt(g6_px*g6_px+g6_py*g6_py+g6_pz*g6_pz);
+																			if( g6_mom>0.15){
+																				LorentzVector VG6 = new LorentzVector(g6_px,g6_py,g6_pz,g6_mom); // sixth gamma
 
-													hasDVPi0P = true
-														&& VmissAll.e() > -1.5 && VmissAll.e() < 2.0
-														&& VmissP.mass() > 0 && VmissP.mass() < 2.5
-														&& VmissAll.mass2() > -0.1 &&  VmissAll.mass2() < 0.1
-														&& VmissAll.px()*VmissAll.px() + VmissAll.py()*VmissAll.py() < 1.0
-														&& VPI0.mass()>0.05 && VPI0.mass()<1.0 
-														&& Vangle( VPI0.vect() , VmissPI0.vect() ) < 7.5
-														;
-												}
-											}
-										}
-									}
-								}
+																				LorentzVector VETA = new LorentzVector(0,0,0,0);
+																				VETA.add(VG1); // add 1st gamma
+																				VETA.add(VG2); // add 2nd gamma
+																				VETA.add(VG3); // add 3rd gamma
+																				VETA.add(VG4); // add 4th gamma
+																				VETA.add(VG5); // add 5th gamma
+																				VETA.add(VG6); // add 6th gamma
+								
+																				LorentzVector Q = new LorentzVector(0,0,0,0);
+																				Q.add(VB);
+																				Q.sub(VE);
+																				LorentzVector W = new LorentzVector(0,0,0,0);
+																				W.add(Q);
+																				W.add(VT);
+								
+																				double e_g1_angle = Vangle( VE.vect() , VG1.vect() ); // angle between e and gamma1
+																				double e_g2_angle = Vangle( VE.vect() , VG2.vect() ); // angle between e and gamma2
+																				double g1_g2_angle = Vangle( VG1.vect() , VG2.vect() ); // angle between gamma1 and gamma2
+								
+																				if( -Q.mass2()>0.8 && W.mass()>1.8 && e_g1_angle>4 && e_g2_angle>4 && g1_g2_angle>1 ){
+																					LorentzVector VmissP = new LorentzVector(0,0,0,0);
+																					VmissP.add(W);
+																					VmissP.sub(VETA);
+																					LorentzVector VmissETA = new LorentzVector(0,0,0,0);
+																					VmissETA.add(W);
+																					VmissETA.sub(VP);
+																					LorentzVector VmissAll = new LorentzVector(0,0,0,0);
+																					VmissAll.add(VmissETA);
+																					VmissAll.sub(VETA);
+								
+																					hasDVPi0P = true
+																						&& VmissAll.e() > -1.5 && VmissAll.e() < 2.0
+																						&& VmissP.mass() > 0 && VmissP.mass() < 2.5
+																						&& VmissAll.mass2() > -0.1 &&  VmissAll.mass2() < 0.1
+																						&& VmissAll.px()*VmissAll.px() + VmissAll.py()*VmissAll.py() < 1.0
+																						&& VETA.mass()>0.05 && VETA.mass()<1.0 
+																						&& Vangle( VETA.vect() , VmissETA.vect() ) < 7.5
+																						;
+																						} // end of if( -Q.mass2()>0.8 && W.mass()>1.8 && e_g1_angle>4 && e_g2_angle>4 && g1_g2_angle>1)
+																				
+																				} // end of if( g6_mom>0.15)
+																			} // end of for (int ig6 = ig5+1; ig6 < n_g && !hasDVPi0P ; ig6++)
+																		} // end of if( g5_mom>0.15)
+																	} // end of for (int ig5 = ig4+1; ig5 < n_g && !hasDVPi0P ; ig5++)
+																} // end of if( g4_mom>0.15)
+															} // end of for (int ig4 = ig3+1; ig4 < n_g && !hasDVPi0P ; ig4++)
+														} // end of if( g3_mom>0.15)
+													} // end of for (int ig3 = ig2+1; ig3 < n_g && !hasDVPi0P ; ig3++)
+												} // end of if( g2_mom>0.15)
+											} // end of for (int ig2 = ig1+1; ig2 < n_g && !hasDVPi0P ; ig2++)
+										} // end of if( g1_mom>0.15)
+									} // end of for (int ig1 = 0; ig1 < n_g-1 && !hasDVPi0P ; ig1++)
+								} // end of if(  p_ene>0.94358 )
 							}
 						}
-
 					}
-
-				}
+                                }
 			}
-		}
 		return hasDVPi0P;
-	}
+		}
 }
 
 
