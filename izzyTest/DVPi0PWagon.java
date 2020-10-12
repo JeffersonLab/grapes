@@ -9,15 +9,15 @@ import org.jlab.jnp.hipo4.data.SchemaFactory;
 
 /**
  * 
- * DVEta Skimming
+ * DVETA Skimming
  *
  * @author fxgirod
  */
 
-public class DVEtaWagon extends BeamTargetWagon {
+public class DVETAWagon extends BeamTargetWagon {
 
-	public DVEtaWagon() {
-		super("DVEtaWagon","fxgirod","0.0");
+	public DVETAWagon() {
+		super("DVETAWagon","fxgirod","0.0");
 	}
 
 	public double Vangle(Vector3 v1, Vector3 v2){ 
