@@ -8,9 +8,6 @@ import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.Event;
 import org.jlab.jnp.hipo4.data.SchemaFactory;
 
-
-//import org.jlab.jnp.grapes.services.*;
-
 /**
  *
  * DVPipPimPi0P Skimming
@@ -145,14 +142,14 @@ public class DVPipPimPi0PWagon2 extends BeamTargetWagon {
                                                                 double g1_g2_angle = Vangle( VG1.vect() , VG2.vect() );
 
                                                                 if( -Q.mass2()>0.8 && W.mass()>1.8 && g1_g2_angle>1 && VPI0.mass()>0.025 && VPI0.mass()<0.3 ){
-                                                                    LorentzVector VOMEGA = new LorentzVector(0,0,0,0);
-                                                                    VOMEGA.add(VPIP);
-                                                                    VOMEGA.add(VPIM);
-                                                                    VOMEGA.add(VPI0);
+                                                                    LorentzVector VETA = new LorentzVector(0,0,0,0);
+                                                                    VETA.add(VPIP);
+                                                                    VETA.add(VPIM);
+                                                                    VETA.add(VPI0);
 
                                                                     LorentzVector VmissP = new LorentzVector(0,0,0,0);
                                                                     VmissP.add(W);
-                                                                    VmissP.sub(VOMEGA);
+                                                                    VmissP.sub(VETA);
                                                                     LorentzVector VmissPIP = new LorentzVector(0,0,0,0);
                                                                     VmissPIP.add(W);
                                                                     VmissPIP.sub(VP);

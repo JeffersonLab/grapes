@@ -9,15 +9,15 @@ import org.jlab.jnp.hipo4.data.SchemaFactory;
 
 /**
  * 
- * DVETA Skimming
+ * DVPi0Pi0Pi0P Skimming
  *
- * @author fxgirod
+ * @author izzy
  */
 
-public class DVETAWagon extends BeamTargetWagon {
+public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 
-	public DVETAWagon() {
-		super("DVETAWagon","fxgirod","0.0");
+	public DVPi0Pi0Pi0PWagon() {
+		super("DVPi0Pi0Pi0PWagon","izzy","0.0");
 	}
 
 	public double Vangle(Vector3 v1, Vector3 v2){ 
@@ -97,6 +97,9 @@ public class DVETAWagon extends BeamTargetWagon {
 											double g2_mom = Math.sqrt(g2_px*g2_px+g2_py*g2_py+g2_pz*g2_pz);
 											if( g2_mom>0.15){
 												LorentzVector VG2 = new LorentzVector(g2_px,g2_py,g2_pz,g2_mom); // second gamma
+												LorentzVector VPI0_1 = new LorentzVector(0,0,0,0); // first pi0
+												VPI0_1.add(VG1); // add 1st gamma
+												VPI0_1.add(VG2); // add 2nd gamma
 												for (int ig3 = ig2+1; ig3 < n_g && !hasDVPi0P ; ig3++) {
 													double g3_px  = RecPart.getFloat("px", g_ind[ig3]);
 													double g3_py  = RecPart.getFloat("py", g_ind[ig3]);
@@ -113,6 +116,9 @@ public class DVETAWagon extends BeamTargetWagon {
 															double g4_mom = Math.sqrt(g4_px*g4_px+g4_py*g4_py+g4_pz*g4_pz);
 															if( g4_mom>0.15){
 																LorentzVector VG4 = new LorentzVector(g4_px,g4_py,g4_pz,g4_mom); // fourth gamma
+																LorentzVector VPI0_2 = new LorentzVector(0,0,0,0); // second pi0
+																VPI0_2.add(VG3); // add 1st gamma
+																VPI0_2.add(VG4); // add 2nd gamma
 																for (int ig5 = ig4+1; ig5 < n_g && !hasDVPi0P ; ig5++) {
 																	double g5_px  = RecPart.getFloat("px", g_ind[ig5]);
 																	double g5_py  = RecPart.getFloat("py", g_ind[ig5]);
@@ -129,14 +135,14 @@ public class DVETAWagon extends BeamTargetWagon {
 																			double g6_mom = Math.sqrt(g6_px*g6_px+g6_py*g6_py+g6_pz*g6_pz);
 																			if( g6_mom>0.15){
 																				LorentzVector VG6 = new LorentzVector(g6_px,g6_py,g6_pz,g6_mom); // sixth gamma
+																				LorentzVector VPI0_3 = new LorentzVector(0,0,0,0); // third pi0
+																				VPI0_3.add(VG5); // add 1st gamma
+																				VPI0_3.add(VG6); // add 2nd gamma
 
-																				LorentzVector VETA = new LorentzVector(0,0,0,0);
-																				VETA.add(VG1); // add 1st gamma
-																				VETA.add(VG2); // add 2nd gamma
-																				VETA.add(VG3); // add 3rd gamma
-																				VETA.add(VG4); // add 4th gamma
-																				VETA.add(VG5); // add 5th gamma
-																				VETA.add(VG6); // add 6th gamma
+																				LorentzVector VETA = new LorentzVector(0,0,0,0); // eta
+																				VETA.add(VPI0_1);
+																				VETA.add(VPI0_2);
+																				VETA.add(VPI0_3);
 								
 																				LorentzVector Q = new LorentzVector(0,0,0,0);
 																				Q.add(VB);
@@ -166,7 +172,7 @@ public class DVETAWagon extends BeamTargetWagon {
 																						&& VmissAll.mass2() > -0.1 &&  VmissAll.mass2() < 0.1
 																						&& VmissAll.px()*VmissAll.px() + VmissAll.py()*VmissAll.py() < 1.0
 																						&& VETA.mass()>0.05 && VETA.mass()<1.0 
-																						&& Vangle( VETA.vect() , VmissETA.vect() ) < 7.5
+																						//&& Vangle( VETA.vect() , VmissETA.vect() ) < 7.5 //assuming poor resolution; maybe eventually
 																						;
 																						} // end of if( -Q.mass2()>0.8 && W.mass()>1.8 && e_g1_angle>4 && e_g2_angle>4 && g1_g2_angle>1)
 																				

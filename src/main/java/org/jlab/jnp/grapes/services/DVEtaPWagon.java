@@ -124,12 +124,13 @@ public class DVEtaPWagon extends BeamTargetWagon {
                                                     VmissAll.add(VmissETA);
                                                     VmissAll.sub(VETA);
 
+                                                    // cuts
                                                     hasDVEtaP = true
                                                             && VmissAll.e() > -1.5 && VmissAll.e() < 2.0
                                                             && VmissP.mass() > 0 && VmissP.mass() < 2.5
                                                             && VmissAll.mass2() > -0.1 &&  VmissAll.mass2() < 0.1
                                                             && VmissAll.px()*VmissAll.px() + VmissAll.py()*VmissAll.py() < 1.0
-                                                            && VETA.mass()>0.05 && VETA.mass()<1.0
+                                                            && VETA.mass()>0.05 && VETA.mass()<1.0 // could cut out pi0 by increasing lower limit
                                                             && Vangle( VETA.vect() , VmissETA.vect() ) < 7.5
                                                     ;
                                                 }
