@@ -8,19 +8,19 @@ import org.jlab.jnp.hipo4.data.Event;
 import org.jlab.jnp.hipo4.data.SchemaFactory;
 
 /**
- * 
- * DVPi0Pi0Pi0P Skimming
+ *
+ * etaPi0Pi0Pi0P Skimming
  *
  * @author izzy
  */
 
-public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
+public class etaPi0Pi0Pi0PWagon extends BeamTargetWagon {
 
 	public DVPi0Pi0Pi0PWagon() {
 		super("DVPi0Pi0Pi0PWagon","izzy","0.0");
 	}
 
-	public double Vangle(Vector3 v1, Vector3 v2){ 
+	public double Vangle(Vector3 v1, Vector3 v2){
 		double res=0;
 		double l1 = v1.mag();
 		double l2 = v2.mag();
@@ -37,7 +37,7 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 		Bank RecPart = new Bank(factory.getSchema("REC::Particle"));
 		event.read(RecPart);
 
-		boolean hasDVPi0Pi0Pi0 = false;
+		boolean hasPi0Pi0Pi0 = false;
 		if( RecPart!=null && RecPart.getRows()>3 ){
 
 			int n_e = 0;
@@ -64,8 +64,8 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
                                         if(stat>2000  && stat<4000 && is_pid==11){e_ind[n_e]=ii;n_e++;}
                                         if(stat>2000  && stat!=4000 && is_pid==2212){p_ind[n_p]=ii;n_p++;}
                                         if(stat!=2000 && stat<4000 && is_pid==22){g_ind[n_g]=ii;n_g++;}
-                                }   
-                                for (int ie = 0; ie < n_e && !hasDVPi0Pi0Pi0; ie++) {
+                                }
+                                for (int ie = 0; ie < n_e && !hasPi0Pi0Pi0; ie++) {
                                         double e_px  = RecPart.getFloat("px", e_ind[ie]);
 					double e_py  = RecPart.getFloat("py", e_ind[ie]);
 					double e_pz  = RecPart.getFloat("pz", e_ind[ie]);
@@ -73,7 +73,7 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 					double e_mom = Math.sqrt(e_px*e_px+e_py*e_py+e_pz*e_pz);
 					if( e_mom>0.1*beamEnergy ){
 						LorentzVector VE = new LorentzVector(e_px,e_py,e_pz,e_mom);
-						for (int ip = 0; ip < n_p && !hasDVPi0Pi0Pi0; ip++) {
+						for (int ip = 0; ip < n_p && !hasPi0Pi0Pi0; ip++) {
 							double p_px  = RecPart.getFloat("px", p_ind[ip]);
 							double p_py  = RecPart.getFloat("py", p_ind[ip]);
 							double p_pz  = RecPart.getFloat("pz", p_ind[ip]);
@@ -81,7 +81,7 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 							double p_ene = Math.sqrt(p_px*p_px+p_py*p_py+p_pz*p_pz+targetMass*targetMass);
 							if(  p_ene>0.94358 ){
 								LorentzVector VP = new LorentzVector(p_px,p_py,p_pz,p_ene);
-								for (int ig1 = 0; ig1 < n_g-1 && !hasDVPi0Pi0Pi0 ; ig1++) {
+								for (int ig1 = 0; ig1 < n_g && !hasPi0Pi0Pi0 ; ig1++) {
 									double g1_px  = RecPart.getFloat("px", g_ind[ig1]);
 									double g1_py  = RecPart.getFloat("py", g_ind[ig1]);
 									double g1_pz  = RecPart.getFloat("pz", g_ind[ig1]);
@@ -89,7 +89,7 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 									double g1_mom = Math.sqrt(g1_px*g1_px+g1_py*g1_py+g1_pz*g1_pz);
 									if( g1_mom>0.15){
 										LorentzVector VG1 = new LorentzVector(g1_px,g1_py,g1_pz,g1_mom); // first gamma
-										for (int ig2 = ig1+1; ig2 < n_g && !hasDVPi0Pi0Pi0 ; ig2++) {
+										for (int ig2 = 0; ig2 < n_g && !hasPi0Pi0Pi0 ; ig2++) {
 											double g2_px  = RecPart.getFloat("px", g_ind[ig2]);
 											double g2_py  = RecPart.getFloat("py", g_ind[ig2]);
 											double g2_pz  = RecPart.getFloat("pz", g_ind[ig2]);
@@ -100,7 +100,7 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 												LorentzVector VPI0_1 = new LorentzVector(0,0,0,0); // first pi0
 												VPI0_1.add(VG1); // add 1st gamma
 												VPI0_1.add(VG2); // add 2nd gamma
-												for (int ig3 = ig2+1; ig3 < n_g && !hasDVPi0Pi0Pi0 ; ig3++) {
+												for (int ig3 = 0; ig3 < n_g && !hasPi0Pi0Pi0 ; ig3++) {
 													double g3_px  = RecPart.getFloat("px", g_ind[ig3]);
 													double g3_py  = RecPart.getFloat("py", g_ind[ig3]);
 													double g3_pz  = RecPart.getFloat("pz", g_ind[ig3]);
@@ -108,7 +108,7 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 													double g3_mom = Math.sqrt(g3_px*g3_px+g3_py*g3_py+g3_pz*g3_pz);
 													if( g3_mom>0.15){
 														LorentzVector VG3 = new LorentzVector(g3_px,g3_py,g3_pz,g3_mom); // third gamma
-														for (int ig4 = ig3+1; ig4 < n_g && !hasDVPi0Pi0Pi0 ; ig4++) {
+														for (int ig4 = 0; ig4 < n_g && !hasPi0Pi0Pi0 ; ig4++) {
 															double g4_px  = RecPart.getFloat("px", g_ind[ig4]);
 															double g4_py  = RecPart.getFloat("py", g_ind[ig4]);
 															double g4_pz  = RecPart.getFloat("pz", g_ind[ig4]);
@@ -119,7 +119,7 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 																LorentzVector VPI0_2 = new LorentzVector(0,0,0,0); // second pi0
 																VPI0_2.add(VG3); // add 1st gamma
 																VPI0_2.add(VG4); // add 2nd gamma
-																for (int ig5 = ig4+1; ig5 < n_g && !hasDVPi0Pi0Pi0 ; ig5++) {
+																for (int ig5 = 0; ig5 < n_g && !hasPi0Pi0Pi0 ; ig5++) {
 																	double g5_px  = RecPart.getFloat("px", g_ind[ig5]);
 																	double g5_py  = RecPart.getFloat("py", g_ind[ig5]);
 																	double g5_pz  = RecPart.getFloat("pz", g_ind[ig5]);
@@ -127,7 +127,7 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 																	double g5_mom = Math.sqrt(g5_px*g5_px+g5_py*g5_py+g5_pz*g5_pz);
 																	if( g5_mom>0.15){
 																		LorentzVector VG5 = new LorentzVector(g5_px,g5_py,g5_pz,g5_mom); // fifth gamma
-																		for (int ig6 = ig5+1; ig6 < n_g && !hasDVPi0Pi0Pi0 ; ig6++) {
+																		for (int ig6 = 0; ig6 < n_g && !hasPi0Pi0Pi0 ; ig6++) {
 																			double g6_px  = RecPart.getFloat("px", g_ind[ig6]);
 																			double g6_py  = RecPart.getFloat("py", g_ind[ig6]);
 																			double g6_pz  = RecPart.getFloat("pz", g_ind[ig6]);
@@ -143,19 +143,19 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 																				VETA.add(VPI0_1);
 																				VETA.add(VPI0_2);
 																				VETA.add(VPI0_3);
-								
+
 																				LorentzVector Q = new LorentzVector(0,0,0,0);
 																				Q.add(VB);
 																				Q.sub(VE);
 																				LorentzVector W = new LorentzVector(0,0,0,0);
 																				W.add(Q);
 																				W.add(VT);
-								
+
 																				double e_g1_angle = Vangle( VE.vect() , VG1.vect() ); // angle between e and gamma1
 																				double e_g2_angle = Vangle( VE.vect() , VG2.vect() ); // angle between e and gamma2
 																				double g1_g2_angle = Vangle( VG1.vect() , VG2.vect() ); // angle between gamma1 and gamma2
-								
-																				if( -Q.mass2()>0.8 && W.mass()>1.8 && e_g1_angle>4 && e_g2_angle>4 && g1_g2_angle>1 ){
+
+																				if( e_g1_angle>4 && e_g2_angle>4 && g1_g2_angle>1 ){
 																					LorentzVector VmissP = new LorentzVector(0,0,0,0);
 																					VmissP.add(W);
 																					VmissP.sub(VETA);
@@ -165,37 +165,35 @@ public class DVPi0Pi0Pi0PWagon extends BeamTargetWagon {
 																					LorentzVector VmissAll = new LorentzVector(0,0,0,0);
 																					VmissAll.add(VmissETA);
 																					VmissAll.sub(VETA);
-								
-																					hasDVPi0Pi0Pi0 = true
+
+																					hasPi0Pi0Pi0 = true
 																						&& VmissAll.e() > -1.5 && VmissAll.e() < 2.0
 																						&& VmissP.mass() > 0 && VmissP.mass() < 2.5
 																						&& VmissAll.mass2() > -0.1 &&  VmissAll.mass2() < 0.1
 																						&& VmissAll.px()*VmissAll.px() + VmissAll.py()*VmissAll.py() < 1.0
-																						&& VETA.mass()>0.05 && VETA.mass()<1.0 
+																						&& VETA.mass()>0.05 && VETA.mass()<1.0
 																						//&& Vangle( VETA.vect() , VmissETA.vect() ) < 7.5 //assuming poor resolution; maybe eventually
 																						;
 																						} // end of if( -Q.mass2()>0.8 && W.mass()>1.8 && e_g1_angle>4 && e_g2_angle>4 && g1_g2_angle>1)
-																				
+
 																				} // end of if( g6_mom>0.15)
-																			} // end of for (int ig6 = ig5+1; ig6 < n_g && !hasDVPi0Pi0Pi0 ; ig6++)
+																			} // end of for (int ig6 = ig5+1; ig6 < n_g && !hasPi0Pi0Pi0 ; ig6++)
 																		} // end of if( g5_mom>0.15)
-																	} // end of for (int ig5 = ig4+1; ig5 < n_g && !hasDVPi0Pi0Pi0 ; ig5++)
+																	} // end of for (int ig5 = ig4+1; ig5 < n_g && !hasPi0Pi0Pi0 ; ig5++)
 																} // end of if( g4_mom>0.15)
-															} // end of for (int ig4 = ig3+1; ig4 < n_g && !hasDVPi0Pi0Pi0 ; ig4++)
+															} // end of for (int ig4 = ig3+1; ig4 < n_g && !hasPi0Pi0Pi0 ; ig4++)
 														} // end of if( g3_mom>0.15)
-													} // end of for (int ig3 = ig2+1; ig3 < n_g && !hasDVPi0Pi0Pi0 ; ig3++)
+													} // end of for (int ig3 = ig2+1; ig3 < n_g && !hasPi0Pi0Pi0 ; ig3++)
 												} // end of if( g2_mom>0.15)
-											} // end of for (int ig2 = ig1+1; ig2 < n_g && !hasDVPi0Pi0Pi0 ; ig2++)
+											} // end of for (int ig2 = ig1+1; ig2 < n_g && !hasPi0Pi0Pi0 ; ig2++)
 										} // end of if( g1_mom>0.15)
-									} // end of for (int ig1 = 0; ig1 < n_g-1 && !hasDVPi0Pi0Pi0 ; ig1++)
+									} // end of for (int ig1 = 0; ig1 < n_g-1 && !hasPi0Pi0Pi0 ; ig1++)
 								} // end of if(  p_ene>0.94358 )
 							}
 						}
 					}
                                 }
 			}
-		return hasDVPi0Pi0Pi0;
+		return hasPi0Pi0Pi0;
 		}
 }
-
-
