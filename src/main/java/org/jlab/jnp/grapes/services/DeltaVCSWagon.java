@@ -274,40 +274,39 @@ public class DeltaVCSWagon extends BeamTargetWagon {
 											LorentzVector VG = new LorentzVector(g_px,g_py,g_pz,g_mom);
 
 											for(int ipip=0;ipip<n_pip && hasDeltaVCS; ipip++){
-													double pip_px  = RecPart.getFloat("px", pip_ind[ipip]);
-													double pip_py  = RecPart.getFloat("py", pip_ind[ipip]);
-													double pip_pz  = RecPart.getFloat("pz", pip_ind[ipip]);
-													double pip_e = Math.sqrt(pip_px*pip_px+pip_py*pip_py+pip_pz*pip_pz+pip_mass*pip_mass);
-													LorentzVector VG2 = new LorentzVector(pip_px,pip_py,pip_pz,pip_e);
+												double pip_px  = RecPart.getFloat("px", pip_ind[ipip]);
+												double pip_py  = RecPart.getFloat("py", pip_ind[ipip]);
+												double pip_pz  = RecPart.getFloat("pz", pip_ind[ipip]);
+												double pip_e = Math.sqrt(pip_px*pip_px+pip_py*pip_py+pip_pz*pip_pz+pip_mass*pip_mass);
+												LorentzVector VPIP = new LorentzVector(pip_px,pip_py,pip_pz,pip_e);
 
-													LorentzVector VmissN = new LorentzVector(0,0,0,0);
-													VmissP.add(W);
-													VmissP.sub(VG);
-													VmissP.sub(VPIP);
-													LorentzVector VmissPi = new LorentzVector(0,0,0,0);
-													VmissPi.add(W);
-													VmissPi.sub(VN);
-													VmissPi.sub(VG);
-													LorentzVector VmissG = new LorentzVector(0,0,0,0);
-													VmissG.add(W);
-													VmissG.sub(VN);
-													VmissG.sub(VPIP);
-													LorentzVector VmissAll = new LorentzVector(0,0,0,0);
-													VmissAll.add(VmissG);
-													VmissAll.sub(VG);
+												LorentzVector VmissN = new LorentzVector(0,0,0,0);
+												VmissN.add(W);
+												VmissN.sub(VG);
+												VmissN.sub(VPIP);
+												LorentzVector VmissPi = new LorentzVector(0,0,0,0);
+												VmissPi.add(W);
+												VmissPi.sub(VN);
+												VmissPi.sub(VG);
+												LorentzVector VmissG = new LorentzVector(0,0,0,0);
+												VmissG.add(W);
+												VmissG.sub(VN);
+												VmissG.sub(VPIP);
+												LorentzVector VmissAll = new LorentzVector(0,0,0,0);
+												VmissAll.add(VmissG);
+												VmissAll.sub(VG);
 
-													hasDeltaVCS = true
-														&& VmissG.mass()>-0.5 && VmissG.mass()<0.7
-														&& VmissN.mass()>0 && VmissN.mass()<2.2
-														&& VmissPi.mass()>-0.3 && VmissPi.mass()<0.6
-														&& VmissAll.mass2() > -0.1 &&  VmissAll.mass2() < 0.1
-														&& VmissAll.e() > -1 && VmissAll.e() < 1.5
-														&& VmissAll.px()*VmissAll.px() + VmissAll.py()*VmissAll.py() < 0.75
-														&& Vangle( VG.vect() , VmissG.vect() ) < 7.5
-														&& Vangle( VN.vect() , VmissN.vect() ) < 32
-														&& Vangle( VPIP.vect() , VmissPi.vect() ) < 23
-														;
-												}// unique photons condition
+												hasDeltaVCS = true
+												  && VmissG.mass()>-0.5 && VmissG.mass()<0.7
+												  && VmissN.mass()>0 && VmissN.mass()<2.2
+												  && VmissPi.mass()>-0.3 && VmissPi.mass()<0.6
+												  && VmissAll.mass2() > -0.1 &&  VmissAll.mass2() < 0.1
+												  && VmissAll.e() > -1 && VmissAll.e() < 1.5
+												  && VmissAll.px()*VmissAll.px() + VmissAll.py()*VmissAll.py() < 0.75
+												  && Vangle( VG.vect() , VmissG.vect() ) < 7.5
+												  && Vangle( VN.vect() , VmissN.vect() ) < 32
+												  && Vangle( VPIP.vect() , VmissPi.vect() ) < 23
+												  ;
 											}// pion loop
 										}// DVCS g E condition
 									}// DVCS g loop
