@@ -38,6 +38,10 @@ public class DeltaVCSWagon extends BeamTargetWagon {
 	public boolean processDataEvent(Event event, SchemaFactory factory) {
 		LorentzVector VB = new LorentzVector(0,0,beamEnergy,beamEnergy);
 		LorentzVector VT = new LorentzVector(0,0,0,targetMass);
+		prot_mass = 0.93827;
+		neut_mass = 0.93957;
+		pip_mass = 0.13957;
+		pi0_mass = 0.13498;
 
 		Bank RecPart = new Bank(factory.getSchema("REC::Particle"));
 		event.read(RecPart);
@@ -222,7 +226,6 @@ public class DeltaVCSWagon extends BeamTargetWagon {
 					}// loop over e
 				}// has e p g pi0 configurtion
 				if( n_e*n_n*n_pip*n_g>0 ){
-
 					boolean[] g_rad_cut = new boolean[n_g];
 					for (int ig = 0; ig < n_g; ig++) {
 						g_rad_cut[ig] = true;
@@ -246,7 +249,6 @@ public class DeltaVCSWagon extends BeamTargetWagon {
 						double e_px  = RecPart.getFloat("px", e_ind[ie]);
 						double e_py  = RecPart.getFloat("py", e_ind[ie]);
 						double e_pz  = RecPart.getFloat("pz", e_ind[ie]);
-
 						double e_mom = Math.sqrt(e_px*e_px+e_py*e_py+e_pz*e_pz);
 						LorentzVector VE = new LorentzVector(e_px,e_py,e_pz,e_mom);
 						LorentzVector Q = new LorentzVector(0,0,0,0);
@@ -261,9 +263,8 @@ public class DeltaVCSWagon extends BeamTargetWagon {
 								double n_px  = RecPart.getFloat("px", n_ind[in]);
 								double n_py  = RecPart.getFloat("py", n_ind[in]);
 								double n_pz  = RecPart.getFloat("pz", n_ind[in]);
-
 								double n_ene = Math.sqrt(n_px*n_px+n_py*n_py+n_pz*n_pz+neut_mass*neut_mass);
-								if( n_ene>0.96062 ){
+								if( n_ene>0.944877 ){
 									LorentzVector VN = new LorentzVector(n_px,n_py,n_pz,n_ene);
 									for (int ig = 0; ig < n_g && !hasDeltaVCS; ig++) {
 										double g_px  = RecPart.getFloat("px", g_ind[ig]);
@@ -272,8 +273,7 @@ public class DeltaVCSWagon extends BeamTargetWagon {
 										double g_mom = Math.sqrt(g_px*g_px+g_py*g_py+g_pz*g_pz);
 										if(  g_mom>0.15*beamEnergy && g_rad_cut[ig]){
 											LorentzVector VG = new LorentzVector(g_px,g_py,g_pz,g_mom);
-
-											for(int ipip=0;ipip<n_pip && hasDeltaVCS; ipip++){
+											for(int ipip=0;ipip<n_pip && !hasDeltaVCS; ipip++){
 												double pip_px  = RecPart.getFloat("px", pip_ind[ipip]);
 												double pip_py  = RecPart.getFloat("py", pip_ind[ipip]);
 												double pip_pz  = RecPart.getFloat("pz", pip_ind[ipip]);
@@ -296,10 +296,11 @@ public class DeltaVCSWagon extends BeamTargetWagon {
 												VmissAll.add(VmissG);
 												VmissAll.sub(VG);
 
+												//System.out.println("enpipg gMM2="+VmissG.mass2()+" , pipMM2="+VmissPi.mass2()+" , nMM2="+VmissN.mass2()+" , aMM2="+VmissAll.mass2()+" e="+VmissAll.e()+" gC="+Vangle( VG.vect() , VmissG.vect() )+" nC="+Vangle( VN.vect() , VmissN.vect() )+" pipC="+Vangle( VPIP.vect() , VmissPi.vect() ));
 												hasDeltaVCS = true
-												  && VmissG.mass()>-0.5 && VmissG.mass()<0.7
-												  && VmissN.mass()>0 && VmissN.mass()<2.2
-												  && VmissPi.mass()>-0.3 && VmissPi.mass()<0.6
+												  && VmissG.mass2()>-0.5 && VmissG.mass2()<0.7
+												  && VmissN.mass2()>0 && VmissN.mass2()<2.2
+												  && VmissPi.mass2()>-0.3 && VmissPi.mass2()<0.6
 												  && VmissAll.mass2() > -0.1 &&  VmissAll.mass2() < 0.1
 												  && VmissAll.e() > -1 && VmissAll.e() < 1.5
 												  && VmissAll.px()*VmissAll.px() + VmissAll.py()*VmissAll.py() < 0.75
