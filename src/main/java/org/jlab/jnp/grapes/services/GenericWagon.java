@@ -6,6 +6,7 @@
 package org.jlab.jnp.grapes.services;
 
 import org.jlab.jnp.grapes.data.DataManager;
+import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.Event;
 
 import org.jlab.jnp.hipo4.data.SchemaFactory;
@@ -25,6 +26,7 @@ public class GenericWagon extends Wagon {
     private EventFilter eventFilterForward = new EventFilter();
     private EventFilter eventFilterCentral = new EventFilter();
     private EventFilter eventFilterTagger  = new EventFilter();
+    private long         eventMask          = 0xFFFFFFFFFFFFFFFFL;
     
     public GenericWagon() {
         super("GenericWagon", "gavalian", "1.0");
@@ -50,6 +52,12 @@ public class GenericWagon extends Wagon {
         list.setStatusWord(DataManager.ANY);
         if( eventFilter.checkFinalState(list) ==false) return false;
         
+        if(eventMask!=0xFFFFFFFFFFFFFFFFL){
+            Bank trigger = new Bank(factory.getSchema("RUN::config"));
+            event.read(trigger);
+            long triggerWord = trigger.getLong("trigger", 0);
+            if((triggerWord&eventMask)==0L) return false;
+        }
         return true;
     }
 
@@ -60,16 +68,20 @@ public class GenericWagon extends Wagon {
         String filterStringForward  = jsonObj.getString("forward","X+:X-:Xn");
         String filterStringCentral  = jsonObj.getString("central","X+:X-:Xn");
         String filterStringTagger   = jsonObj.getString("tagger","X+:X-:Xn");
+        String eventMaskString      = jsonObj.getString("trigger","FFFFFFFF");
         
         this.eventFilter.setFilter(filterString);
         this.eventFilterForward.setFilter(filterStringForward);
         this.eventFilterCentral.setFilter(filterStringCentral);
         this.eventFilterTagger.setFilter(filterStringTagger);
         
+        eventMask = Long.parseLong(eventMaskString,16);
+        
         System.out.println("SETTING FILTER [CENTRAL] : " + filterStringCentral);
         System.out.println("SETTING FILTER [FORWARD] : " + filterStringForward);
         System.out.println("SETTING FILTER [ TAGGER] : " + filterStringTagger);
         System.out.println("SETTING FILTER [OVERALL] : " + filterString);
+        System.out.printf("SETTING EVENT MASK       : %X \n",eventMask);
         
         //System.out.println(" WAGON CONFIGURATION : set filter = " + filterString);
         return true;
