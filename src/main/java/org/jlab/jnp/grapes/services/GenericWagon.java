@@ -52,12 +52,12 @@ public class GenericWagon extends Wagon {
         list.setStatusWord(DataManager.ANY);
         if( eventFilter.checkFinalState(list) ==false) return false;
         
-        if(eventMask!=0xFFFFFFFFFFFFFFFFL){
+        /*if(eventMask!=0xFFFFFFFFFFFFFFFFL){
             Bank trigger = new Bank(factory.getSchema("RUN::config"));
             event.read(trigger);
             long triggerWord = trigger.getLong("trigger", 0);
             if((triggerWord&eventMask)==0L) return false;
-        }
+        }*/
         return true;
     }
 

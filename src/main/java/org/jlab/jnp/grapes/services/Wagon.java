@@ -12,6 +12,7 @@ import org.jlab.clara.engine.Engine;
 import org.jlab.clara.engine.EngineData;
 import org.jlab.clara.engine.EngineDataType;
 import org.jlab.jnp.grapes.io.Clas12Types;
+import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.DataFrame;
 import org.jlab.jnp.hipo4.data.DataFrameBuilder;
 import org.jlab.jnp.hipo4.data.Event;
@@ -35,8 +36,9 @@ public abstract class Wagon implements Engine {
     private  int                  id = 0;
     private  String       dataFilter = "X+:X-:Xn";
     private  int     processedEvents = 0;
+    private  long          eventMask = 0xFFFFFFFFFFFFFFFFL;
+    volatile SchemaFactory   engineDictionary = new SchemaFactory();
     
-    volatile SchemaFactory                          engineDictionary = new SchemaFactory();
     
     public Wagon(String name, String author, String version){        
         engineName    = name;
@@ -60,6 +62,11 @@ public abstract class Wagon implements Engine {
         id = jsonObj.getInt("id", 0);
         System.out.println(" CONFIG: set id = " + id);
         this.init(engineConfiguration);
+        String eventMaskString      = jsonObj.getString("trigger","0xFFFFFFFFFFFFFFFF");
+        if(eventMaskString.startsWith("0x")==true){
+            eventMaskString = eventMaskString.substring(2);
+        }
+        eventMask = Long.parseLong(eventMaskString,16);
         return config;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -87,7 +94,15 @@ public abstract class Wagon implements Engine {
                 
                 
                 //event.setSchemaFactory(engineDictionary,false);
-                processStatus = processDataEvent(hipoEvent,engineDictionary);
+                Bank configBank = new Bank(engineDictionary.getSchema("RUN::config"));
+                hipoEvent.read(configBank);
+                long triggerWord  = configBank.getLong("trigger", 0);
+                
+                processStatus = false;
+                if((triggerWord&eventMask)!=0L){                    
+                    processStatus = processDataEvent(hipoEvent,engineDictionary);
+                } 
+                
                 if(processedEvents==0){
                     hipoEvent.setEventBitMask(id);
                 }
