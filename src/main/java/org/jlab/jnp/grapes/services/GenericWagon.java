@@ -75,7 +75,7 @@ public class GenericWagon extends Wagon {
         this.eventFilterCentral.setFilter(filterStringCentral);
         this.eventFilterTagger.setFilter(filterStringTagger);
         
-        eventMask = Long.parseLong(eventMaskString,16);
+        //eventMask = Long.parseLong(eventMaskString,16);
         
         System.out.println("SETTING FILTER [CENTRAL] : " + filterStringCentral);
         System.out.println("SETTING FILTER [FORWARD] : " + filterStringForward);
