@@ -81,7 +81,7 @@ public class GenericWagon extends Wagon {
         System.out.println("SETTING FILTER [FORWARD] : " + filterStringForward);
         System.out.println("SETTING FILTER [ TAGGER] : " + filterStringTagger);
         System.out.println("SETTING FILTER [OVERALL] : " + filterString);
-        System.out.printf("SETTING EVENT MASK       : %X \n",eventMask);
+        //System.out.printf("SETTING EVENT MASK       : %X \n",eventMask);
         
         //System.out.println(" WAGON CONFIGURATION : set filter = " + filterString);
         return true;
