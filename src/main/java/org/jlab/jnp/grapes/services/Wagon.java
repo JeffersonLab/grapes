@@ -62,7 +62,7 @@ public abstract class Wagon implements Engine {
         id = jsonObj.getInt("id", 0);
         System.out.println(" CONFIG: set id = " + id);
         this.init(engineConfiguration);
-        String eventMaskString      = jsonObj.getString("trigger","0xFFFFFFFFFFFFFFFF");
+        String eventMaskString      = jsonObj.getString("trigger","0x7FFFFFFFFFFFFFFF");
         if(eventMaskString.startsWith("0x")==true){
             eventMaskString = eventMaskString.substring(2);
         }
@@ -99,7 +99,7 @@ public abstract class Wagon implements Engine {
                 long triggerWord  = configBank.getLong("trigger", 0);
                 
                 processStatus = false;
-                if((triggerWord&eventMask)!=0L){                    
+                if((triggerWord&eventMask)!=0L){
                     processStatus = processDataEvent(hipoEvent,engineDictionary);
                 } 
                 
