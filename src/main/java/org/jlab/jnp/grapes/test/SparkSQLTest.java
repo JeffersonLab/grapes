@@ -12,5 +12,8 @@ package org.jlab.jnp.grapes.test;
 public class SparkSQLTest {
     public static void main(String[] args){
         System.out.println("*** Running test with apache-spark.......");
+        String format = "0FFFFFFFFFFFFFFF";
+        long trigger = Long.parseLong(format,16);
+        System.out.printf("trigger = %X\n",trigger);
     }
 }
