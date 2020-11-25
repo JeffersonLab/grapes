@@ -6,12 +6,9 @@
 package org.jlab.jnp.grapes.services;
 
 import org.jlab.jnp.grapes.data.DataManager;
-import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.Event;
 
 import org.jlab.jnp.hipo4.data.SchemaFactory;
-import org.jlab.jnp.physics.EventFilter;
-import org.jlab.jnp.physics.Particle;
 import org.jlab.jnp.physics.ParticleList;
 import org.jlab.jnp.utils.json.Json;
 import org.jlab.jnp.utils.json.JsonObject;
@@ -22,14 +19,18 @@ import org.jlab.jnp.utils.json.JsonObject;
  */
 public class GenericWagon extends Wagon {
     
-    private EventFilter eventFilter        = new EventFilter();
-    private EventFilter eventFilterForward = new EventFilter();
-    private EventFilter eventFilterCentral = new EventFilter();
-    private EventFilter eventFilterTagger  = new EventFilter();
-    private long         eventMask          = 0xFFFFFFFFFFFFFFFFL;
+    private ExtendedEventFilter eventFilter         = new ExtendedEventFilter();
+    private ExtendedEventFilter eventFilterForward  = new ExtendedEventFilter();
+    private ExtendedEventFilter eventFilterCentral  = new ExtendedEventFilter();
+    private ExtendedEventFilter eventFilterTagger   = new ExtendedEventFilter();
+    private ExtendedEventFilter eventFilterElectron = new ExtendedEventFilter();
+    private long        eventMask           = 0xFFFFFFFFFFFFFFFFL;
     
     public GenericWagon() {
         super("GenericWagon", "gavalian", "1.0");
+    }
+    public GenericWagon(String name, String author, String version) {
+        super(name,author,version);
     }
 
     @Override
@@ -52,6 +53,9 @@ public class GenericWagon extends Wagon {
         list.setStatusWord(DataManager.ANY);
         if( eventFilter.checkFinalState(list) ==false) return false;
         
+        list.setStatusWord(DataManager.FORWARD);
+        if( eventFilterElectron.checkElectronKinematics(list) ==false) return false;
+        
         /*if(eventMask!=0xFFFFFFFFFFFFFFFFL){
             Bank trigger = new Bank(factory.getSchema("RUN::config"));
             event.read(trigger);
@@ -64,23 +68,28 @@ public class GenericWagon extends Wagon {
     @Override
     public boolean init(String jsonString) {
         JsonObject jsonObj = Json.parse(jsonString).asObject();
-        String filterString = jsonObj.getString("filter","X+:X-:Xn");
+        double beamEnergy           = jsonObj.getDouble("beamEnergy",11);
+        int    targetPDG            = jsonObj.getInt("targetPDG",2212);
+        String filterString         = jsonObj.getString("filter","X+:X-:Xn");
         String filterStringForward  = jsonObj.getString("forward","X+:X-:Xn");
         String filterStringCentral  = jsonObj.getString("central","X+:X-:Xn");
         String filterStringTagger   = jsonObj.getString("tagger","X+:X-:Xn");
+        String filterStringElectron = jsonObj.getString("electron","");
         String eventMaskString      = jsonObj.getString("trigger","FFFFFFFF");
         
         this.eventFilter.setFilter(filterString);
         this.eventFilterForward.setFilter(filterStringForward);
         this.eventFilterCentral.setFilter(filterStringCentral);
         this.eventFilterTagger.setFilter(filterStringTagger);
+        this.eventFilterElectron.setElectronFilter(beamEnergy, targetPDG, filterStringElectron);
         
         //eventMask = Long.parseLong(eventMaskString,16);
         
-        System.out.println("SETTING FILTER [CENTRAL] : " + filterStringCentral);
-        System.out.println("SETTING FILTER [FORWARD] : " + filterStringForward);
-        System.out.println("SETTING FILTER [ TAGGER] : " + filterStringTagger);
-        System.out.println("SETTING FILTER [OVERALL] : " + filterString);
+        System.out.println("SETTING FILTER [CENTRAL]  : " + filterStringCentral);
+        System.out.println("SETTING FILTER [FORWARD]  : " + filterStringForward);
+        System.out.println("SETTING FILTER [ TAGGER]  : " + filterStringTagger);
+        System.out.println("SETTING FILTER [OVERALL]  : " + filterString);
+        System.out.println("SETTING FILTER [ELECTRON] : " + filterStringElectron);
         //System.out.printf("SETTING EVENT MASK       : %X \n",eventMask);
         
         //System.out.println(" WAGON CONFIGURATION : set filter = " + filterString);
