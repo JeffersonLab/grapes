@@ -15,7 +15,8 @@ public class ExtendedEventFilter extends EventFilter {
 
     double beamEnergy = 11;
     int    targetPDG  = 2212;
-    HashMap<String, ParticlePropertyFilter> kineFilters = new HashMap();
+    HashMap<String, ParticlePropertyFilter> allKineFilters    = new HashMap();
+    HashMap<String, ParticlePropertyFilter> activeKineFilters = new HashMap();
     
     
        
@@ -33,28 +34,40 @@ public class ExtendedEventFilter extends EventFilter {
     private void init() {
         ParticlePropertyFilter Q2 = new ParticlePropertyFilter(1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         ParticlePropertyFilter W  = new ParticlePropertyFilter(1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-        kineFilters.put("Q2", Q2);
-        kineFilters.put("W",  W);
+        ParticlePropertyFilter P  = new ParticlePropertyFilter(1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+        ParticlePropertyFilter VZ = new ParticlePropertyFilter(1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+        allKineFilters.put("Q2", Q2);
+        allKineFilters.put("W",  W);
+        allKineFilters.put("P",  P);
+        allKineFilters.put("VZ", VZ);
     }
     
     public boolean checkElectronKinematics(ParticleList plist)
     {
         boolean filter = false;
         
-        Particle beam     = new Particle(11,0,0,beamEnergy,0,0,0);
-        Particle target   = Particle.createWithPid(targetPDG, 0,0,0, 0,0,0);
-        for(int i=0; i<plist.count(); i++) {
-            Particle electron = plist.getByPid(11, i);
-            if(electron != null) { 
-                Particle q = new Particle();
-                q.copy(beam);
-                q.combine(electron, -1);
-                Particle w = new Particle();
-                w.copy(target);
-                w.combine(q, +1);    
-                if(kineFilters.get("Q2").chackRange(-q.mass2()) && this.kineFilters.get("W").chackRange(w.mass())) {
-                    filter = true;
-                    break;
+        if(activeKineFilters.isEmpty()) { 
+            filter = true;
+        }
+        else {
+            Particle beam     = new Particle(11,0,0,beamEnergy,0,0,0);
+            Particle target   = Particle.createWithPid(targetPDG, 0,0,0, 0,0,0);
+            for(int i=0; i<plist.count(); i++) {
+                Particle electron = plist.getByPid(11, i);
+                if(electron != null) { 
+                    Particle q = new Particle();
+                    q.copy(beam);
+                    q.combine(electron, -1);
+                    Particle w = new Particle();
+                    w.copy(target);
+                    w.combine(q, +1);    
+                    if(this.activeKineFilters.get("Q2").chackRange(-q.mass2())  && 
+                       this.activeKineFilters.get("W").chackRange(w.mass())     && 
+                       this.activeKineFilters.get("P").chackRange(electron.p()) && 
+                       this.activeKineFilters.get("VZ").chackRange(electron.vz())) {
+                        filter = true;
+                        break;
+                    }
                 }
             }
         }
@@ -72,15 +85,18 @@ public class ExtendedEventFilter extends EventFilter {
                 if (nameValuePair.length == 2) {
                     String name  = nameValuePair[0].trim();
                     String value = nameValuePair[1].trim();
-                    if (!kineFilters.containsKey(name)) {
+                    if (!allKineFilters.containsKey(name)) {
                         throw new RuntimeException("Invalid filter variable name ("+name+") in "+opt);
+                    }
+                    else {
+                        activeKineFilters.put(name,allKineFilters.get(name));
                     }
                     try {
                         if (cut.contains("<")) {
-                            kineFilters.get(name).propertyMax = Double.parseDouble(value);
+                            activeKineFilters.get(name).propertyMax = Double.parseDouble(value);
                         }
                         else {
-                            kineFilters.get(name).propertyMin = Double.parseDouble(value);
+                            activeKineFilters.get(name).propertyMin = Double.parseDouble(value);
                         }
                     }
                     catch (Exception e) {
@@ -102,9 +118,9 @@ public class ExtendedEventFilter extends EventFilter {
         str.append(String.format("KINEMATICS:---> BEAM ENERGY : %8.3f GeV\n" +
                                  "                TARGET PDG : %6d",
                                 this.beamEnergy,this.targetPDG));
-        for(String key : kineFilters.keySet()) {
+        for(String key : activeKineFilters.keySet()) {
             str.append(String.format("\n                " +
-                    key + " RANGE : %.2f-%.2f",kineFilters.get(key).propertyMin,kineFilters.get(key).propertyMax));
+                    key + " RANGE : %.2f-%.2f",activeKineFilters.get(key).propertyMin,activeKineFilters.get(key).propertyMax));
         }
         return str.toString();
     }
