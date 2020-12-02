@@ -11,12 +11,12 @@ import org.jlab.jnp.hipo4.data.SchemaFactory;
 
 /**
  *
- * epPipPimGamma Skimming
+ * EPPipPimGamma Skimming
  *
  * @author izzy
  */
 
-public class epPipPimGammaWagon extends BeamTargetWagon {
+public class EPPipPimGammaWagon extends BeamTargetWagon {
 
     private final int    minParticles = 4;
     private final double minProtonEnergy = 0.94358;
@@ -34,8 +34,8 @@ public class epPipPimGammaWagon extends BeamTargetWagon {
 
     private double minElectronEnergy=0;
 
-    public epPipPimGammaWagon() {
-		super("epPipPimGammaWagon", "izzy", "0.0");
+    public EPPipPimGammaWagon() {
+		super("EPPipPimGammaWagon", "izzy", "0.0");
     }
 
     private double Vangle(Vector3 v1, Vector3 v2){
@@ -158,9 +158,7 @@ public class epPipPimGammaWagon extends BeamTargetWagon {
                                         Particle pi0 = new Particle();
                                         pi0.copy(gammas.get(ig1));
                                         pi0.combine(gammas.get(ig2), +1);
-                                        //pi0.setProperty("id1", ig1);
-                                        //pi0.setProperty("id2", ig2);
-                                        if(this.isPi0(pi0)) pi0s.add(pi0); //ASK ABOUT THIS NOTATION
+                                        if(this.isPi0(pi0)) pi0s.add(pi0);
 
                                         double e_g1_angle = Vangle( electron.vector().vect() , gammas.get(ig1).vector().vect() );
                                         double e_g2_angle = Vangle( electron.vector().vect() , gammas.get(ig2).vector().vect() );
@@ -168,7 +166,7 @@ public class epPipPimGammaWagon extends BeamTargetWagon {
 
                                         if ( e_g1_angle > this.minGammaAngle && e_g2_angle > this.minGammaAngle && g1_g2_angle > this.minEtaAngle
                                             && pi0.mass() > minPi0Mass && pi0.mass() < maxPi0Mass) {
-                                            Particle eta = new Particle(); //ASK ABOUT THIS NOTATION AS WELL
+                                            Particle eta = new Particle(); 
                                             eta.copy(pips.get(ipip));
                                             eta.combine(pims.get(ipim), +1);
                                             eta.combine(gammas.get(ig1), +1);
@@ -185,17 +183,17 @@ public class epPipPimGammaWagon extends BeamTargetWagon {
                                             missAll.combine(eta, -1);
                                             Particle missPip = new Particle();
                                             missPip.copy(w);
-                                            missPip.combine(protons.get(ip), -1); //ASK ABOUT THIS NOTATION
+                                            missPip.combine(protons.get(ip), -1); 
                                             missPip.combine(pims.get(ipim), -1);
                                             missPip.combine(pi0, -1);
                                             Particle missPim = new Particle();
                                             missPim.copy(w);
-                                            missPim.combine(protons.get(ip), -1); //ASK ABOUT THIS NOTATION
+                                            missPim.combine(protons.get(ip), -1); 
                                             missPim.combine(pips.get(ipip), -1);
                                             missPim.combine(pi0, -1);
                                             Particle missPi0 = new Particle();
                                             missPi0.copy(w);
-                                            missPi0.combine(protons.get(ip), -1); //ASK ABOUT THIS NOTATION
+                                            missPi0.combine(protons.get(ip), -1); 
                                             missPi0.combine(pips.get(ipip), -1);
                                             missPi0.combine(pims.get(ipim), -1);
 
