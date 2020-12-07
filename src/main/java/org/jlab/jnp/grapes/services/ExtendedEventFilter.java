@@ -13,10 +13,10 @@ import org.jlab.jnp.physics.ParticleList;
 public class ExtendedEventFilter extends EventFilter {
     
 
-    double beamEnergy = 11;
-    int    targetPDG  = 2212;
-    HashMap<String, ParticlePropertyFilter> allKineFilters    = new HashMap();
-    HashMap<String, ParticlePropertyFilter> activeKineFilters = new HashMap();
+    double  beamEnergy   = 11;
+    int     targetPDG    = 2212;
+    boolean activeFilter = false;
+    HashMap<String, ParticlePropertyFilter> kineFilters = new HashMap();
     
     
        
@@ -36,20 +36,17 @@ public class ExtendedEventFilter extends EventFilter {
         ParticlePropertyFilter W  = new ParticlePropertyFilter(1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         ParticlePropertyFilter P  = new ParticlePropertyFilter(1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         ParticlePropertyFilter VZ = new ParticlePropertyFilter(1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-        allKineFilters.put("Q2", Q2);
-        allKineFilters.put("W",  W);
-        allKineFilters.put("P",  P);
-        allKineFilters.put("VZ", VZ);
+        kineFilters.put("Q2", Q2);
+        kineFilters.put("W",  W);
+        kineFilters.put("P",  P);
+        kineFilters.put("VZ", VZ);
     }
     
     public boolean checkElectronKinematics(ParticleList plist)
     {
         boolean filter = false;
         
-        if(activeKineFilters.isEmpty()) { 
-            filter = true;
-        }
-        else {
+        if(activeFilter) { 
             Particle beam     = new Particle(11,0,0,beamEnergy,0,0,0);
             Particle target   = Particle.createWithPid(targetPDG, 0,0,0, 0,0,0);
             for(int i=0; i<plist.count(); i++) {
@@ -61,15 +58,18 @@ public class ExtendedEventFilter extends EventFilter {
                     Particle w = new Particle();
                     w.copy(target);
                     w.combine(q, +1);    
-                    if(this.activeKineFilters.get("Q2").chackRange(-q.mass2())  && 
-                       this.activeKineFilters.get("W").chackRange(w.mass())     && 
-                       this.activeKineFilters.get("P").chackRange(electron.p()) && 
-                       this.activeKineFilters.get("VZ").chackRange(electron.vz())) {
+                    if(this.kineFilters.get("Q2").chackRange(-q.mass2())  && 
+                       this.kineFilters.get("W").chackRange(w.mass())     && 
+                       this.kineFilters.get("P").chackRange(electron.p()) && 
+                       this.kineFilters.get("VZ").chackRange(electron.vz())) {
                         filter = true;
                         break;
                     }
                 }
             }
+        }
+        else {
+            filter = true;
         }
  
         return filter;
@@ -85,19 +85,17 @@ public class ExtendedEventFilter extends EventFilter {
                 if (nameValuePair.length == 2) {
                     String name  = nameValuePair[0].trim();
                     String value = nameValuePair[1].trim();
-                    if (!allKineFilters.containsKey(name)) {
+                    if (!kineFilters.containsKey(name)) {
                         throw new RuntimeException("Invalid filter variable name ("+name+") in "+opt);
-                    }
-                    else {
-                        activeKineFilters.put(name,allKineFilters.get(name));
                     }
                     try {
                         if (cut.contains("<")) {
-                            activeKineFilters.get(name).propertyMax = Double.parseDouble(value);
+                            kineFilters.get(name).propertyMax = Double.parseDouble(value);
                         }
                         else {
-                            activeKineFilters.get(name).propertyMin = Double.parseDouble(value);
+                            kineFilters.get(name).propertyMin = Double.parseDouble(value);
                         }
+                        activeFilter = true;
                     }
                     catch (Exception e) {
                         throw new RuntimeException("Invalid filter variable value ("+value+") in "+opt);
@@ -118,9 +116,9 @@ public class ExtendedEventFilter extends EventFilter {
         str.append(String.format("KINEMATICS:---> BEAM ENERGY : %8.3f GeV\n" +
                                  "                TARGET PDG : %6d",
                                 this.beamEnergy,this.targetPDG));
-        for(String key : activeKineFilters.keySet()) {
+        for(String key : kineFilters.keySet()) {
             str.append(String.format("\n                " +
-                    key + " RANGE : %.2f-%.2f",activeKineFilters.get(key).propertyMin,activeKineFilters.get(key).propertyMax));
+                    key + " RANGE : %.2f-%.2f",kineFilters.get(key).propertyMin,kineFilters.get(key).propertyMax));
         }
         return str.toString();
     }
