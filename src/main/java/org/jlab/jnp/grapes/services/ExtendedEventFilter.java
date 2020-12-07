@@ -38,8 +38,8 @@ public class ExtendedEventFilter extends EventFilter {
         ParticlePropertyFilter VZ = new ParticlePropertyFilter(1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         kineFilters.put("Q2", Q2);
         kineFilters.put("W",  W);
-        kineFilters.put("P",  P);
-        kineFilters.put("VZ", VZ);
+        kineFilters.put("p",  P);
+        kineFilters.put("vz", VZ);
     }
     
     public boolean checkElectronKinematics(ParticleList plist)
@@ -60,8 +60,8 @@ public class ExtendedEventFilter extends EventFilter {
                     w.combine(q, +1);    
                     if(this.kineFilters.get("Q2").chackRange(-q.mass2())  && 
                        this.kineFilters.get("W").chackRange(w.mass())     && 
-                       this.kineFilters.get("P").chackRange(electron.p()) && 
-                       this.kineFilters.get("VZ").chackRange(electron.vz())) {
+                       this.kineFilters.get("p").chackRange(electron.p()) && 
+                       this.kineFilters.get("vz").chackRange(electron.vz())) {
                         filter = true;
                         break;
                     }
