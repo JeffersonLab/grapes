@@ -11,12 +11,12 @@ import org.jlab.jnp.hipo4.data.SchemaFactory;
 
 /**
  *
- * EP2Gamma Skimming
+ * EPGamma Skimming
  *
  * @author izzy
  */
 
-public class EP2GammaWagon extends BeamTargetWagon {
+public class EPGammaWagon extends BeamTargetWagon {
 
         private final int    minParticles = 4;
         private final double minProtonEnergy = 0.94358;
@@ -26,8 +26,8 @@ public class EP2GammaWagon extends BeamTargetWagon {
 
         private double minElectronEnergy = 0;
 
-	public EP2GammaWagon() {
-		super("EP2GammaWagon","izzy","0.0");
+	public EPGammaWagon() {
+		super("EPGammaWagon","izzy","0.0");
 	}
 
 	private double Vangle(Vector3 v1, Vector3 v2){
@@ -99,7 +99,7 @@ public class EP2GammaWagon extends BeamTargetWagon {
                     else if(isGamma(pid,status,part))        gammas.add(part);
                 }
 
-                boolean is_candidate = electron!=null && protons.size()>0 && gammas.size()>1;
+                boolean is_candidate = electron!=null && protons.size()>0 && gammas.size()>0;
                 if(!is_candidate) return false;
                 else {
 
