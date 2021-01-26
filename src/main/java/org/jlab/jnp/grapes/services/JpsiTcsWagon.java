@@ -1,14 +1,10 @@
 package org.jlab.jnp.grapes.services;
 
-
-
 import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.Event;
 import org.jlab.jnp.hipo4.data.SchemaFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
-//import org.jlab.jnp.hipo4.data.Event;
-//import org.jlab.jnp.hipo4.data.SchemaFactory;
 
 /**
  * 
@@ -20,13 +16,13 @@ import java.util.HashMap;
  */
 public class JpsiTcsWagon extends Wagon {
 
-    static final float MIP_ECOUT_MAX = 0.085f;
-    static final float MIP_ECIN_MAX = 0.055f;
-    static final float MIP_PCAL_MAX = 0.045f;
+    static final float MIP_ECOUT_MAX = 0.110f;
+    static final float MIP_ECIN_MAX = 0.100f;
+    static final float MIP_PCAL_MAX = 0.200f;
     static final float MOM_HIGH = 2.0f;
-    
+
     public JpsiTcsWagon(){
-        super("JpsiTcsWagon","baltzell","0.2");
+        super("JpsiTcsWagon","baltzell","0.3");
     }
 
     @Override
@@ -105,13 +101,21 @@ public class JpsiTcsWagon extends Wagon {
         ///////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////
 
-        // TCS, e+e- and 2 positives:
+        // e+e- and at least one other positives:
         if (eleCandi.size()>0 && posCandi.size()>0 && npos>1) return true;
 
-        // J/Psi, mu+mu-p:
+        // e-e-/e+e+ and at least one other positive:
+        if (eleCandi.size()>1 && npos>0) return true;
+        if (posCandi.size()>1 && npos>2) return true;
+
+        // mu+mu-p:
         if (mumCandi.size()>0 && mupCandi.size()>0 && nposFD>1) return true;
 
-        // e/mu candidates with "high" momentum:
+        // mu-mu-/mu+mu+ and at least one other positive:
+        if (mumCandi.size()>1 && nposFD>0) return true;
+        if (mupCandi.size()>1 && nposFD>2) return true;
+
+        // candidates with "high" momentum:
         ArrayList<Integer> eleHiCandi = new ArrayList<>();
         ArrayList<Integer> posHiCandi = new ArrayList<>();
         ArrayList<Integer> mupHiCandi = new ArrayList<>();
@@ -121,11 +125,13 @@ public class JpsiTcsWagon extends Wagon {
         for (int ii : mumCandi) if (this.getMomentum(ii,particles) > MOM_HIGH) mumHiCandi.add(ii);
         for (int ii : mupCandi) if (this.getMomentum(ii,particles) > MOM_HIGH) mupHiCandi.add(ii);
 
-        // J/Psi, high-momentum e+e-:
+        // high-momentum e+e-/e-e-/e+e+:
         if (eleHiCandi.size()>0 && posHiCandi.size()>0) return true;
+        if (eleHiCandi.size()>1 || posHiCandi.size()>1) return true;
 
-        // J/Psi, high-momentum mu+mu-:
+        // high-momentum mu+mu-/mu-mu-/mu+mu+:
         if (mumHiCandi.size()>0 && mupHiCandi.size()>0) return true;
+        if (mumHiCandi.size()>1 || mupHiCandi.size()>1) return true;
 
         return false;
     }
