@@ -139,7 +139,7 @@ public class EPGammaWagon extends BeamTargetWagon {
                                             && missAll.mass2() > -0.1 &&  missAll.mass2() < 0.1
                                             && missAll.px()*missAll.px() + missAll.py()*missAll.py() < 1.0
                                             && eta.mass()>0.05 && eta.mass()<1.0
-                                            && Vangle( eta.vector().vect() , eta.vector().vect() ) < 7.5
+                                            && Vangle( eta.vector().vect() , missEta.vector().vect() ) < 7.5
                                             ;
                                 }
                             }
