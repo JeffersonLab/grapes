@@ -37,9 +37,9 @@ public class TwoPionWagon extends Wagon {
 
 		boolean flag_TwoPion = false;
 		int     nelec  = 0;
-            int     nprot = 0;
-            int     npip = 0;
-            int     npim = 0;
+                int     nprot = 0;
+                int     npip = 0;
+                int     npim = 0;
 
                 
                 if( bankREC!=null) {
