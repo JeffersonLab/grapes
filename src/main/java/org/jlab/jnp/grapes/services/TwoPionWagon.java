@@ -37,9 +37,9 @@ public class TwoPionWagon extends Wagon {
 
 		boolean flag_TwoPion = false;
 		int     nelec  = 0;
-        int     nprot = 0;
-        int     npip = 0;
-        int     npim = 0;
+            int     nprot = 0;
+            int     npip = 0;
+            int     npim = 0;
 
                 
                 if( bankREC!=null) {
@@ -60,7 +60,7 @@ public class TwoPionWagon extends Wagon {
                             }
                     }
 
-                    if (nelec>=1 && ((nprot+npip)>=2 || (nprot+npip)>=2 || (npip+npim)>=2 || (nprot+npip+npim)>=3)) && (nprot+npip+npim)<=7) flag_TwoPion=true;
+                    if (nelec>=1 && ((nprot+npip)>=2 || (nprot+npim)>=2 || (npip+npim)>=2 || (nprot+npip+npim)>=3)) && (nprot+npip+npim)<=7) flag_TwoPion=true;
                 }
                 
                 return flag_TwoPion;
