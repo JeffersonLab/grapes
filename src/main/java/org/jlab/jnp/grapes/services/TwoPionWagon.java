@@ -50,7 +50,7 @@ public class TwoPionWagon extends Wagon {
             int status = bankREC.getShort("status", ii);
 
             // Electron in forward detector (status between 2000 and 4000) and not low momentum (p < 1)
-            if (pid == 11 && 2000 >= Math.abs(status) && Math.abs(status) < 4000 && p>1) nelec++;
+            if (pid == 11 && 2000 <= Math.abs(status) && Math.abs(status) < 4000 && p>1) nelec++;
 
             // Particle in forward or central detector
             if(status>=2000) {
