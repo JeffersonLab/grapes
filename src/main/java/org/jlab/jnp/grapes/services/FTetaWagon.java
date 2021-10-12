@@ -6,11 +6,11 @@ import java.util.Map;
 
 /**
  *
- * Skim for 2pi channel with e- in FT for MesonX
+ * Skim for eta channel with e- in FT for MesonX
  *
- * @author devita 9/2021 TwoPiFTWagon->> FTetaWagon : modified by C.Salgado
- * adding conditions for : at least two neutrals, neutral energy > 0.5 GeV and
- * two first neutrals in different sectors
+ * @author zachariou, devita 9/2021 derived from TwoPiFTWagon, modified 
+ * by C.Salgado adding conditions for at least two neutrals, 
+ * neutral energy > 0.5 GeV in two different sectors
  */
 public class FTetaWagon extends Wagon {
 
