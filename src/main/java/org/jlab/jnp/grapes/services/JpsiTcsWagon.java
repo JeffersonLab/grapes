@@ -22,7 +22,7 @@ public class JpsiTcsWagon extends Wagon {
     static final float MOM_HIGH = 2.0f;
 
     public JpsiTcsWagon(){
-        super("JpsiTcsWagon","baltzell","0.3");
+        super("JpsiTcsWagon","baltzell","0.5");
     }
 
     @Override
@@ -56,11 +56,11 @@ public class JpsiTcsWagon extends Wagon {
         // load map from REC::Particle rows to REC::Calorimeter rows:
         HashMap<Integer,ArrayList<Integer>> part2calo = this.mapByIndex(calorimeters);
         
-        int npos=0,nposFD=0;
-        ArrayList<Integer> eleCandi = new ArrayList<>();
-        ArrayList<Integer> posCandi = new ArrayList<>();
-        ArrayList<Integer> mupCandi = new ArrayList<>();
-        ArrayList<Integer> mumCandi = new ArrayList<>();
+        int npositives=0,npositivesFD=0,nprotonsFD=0,nelectronsFT=0;
+        ArrayList<Integer> electrons = new ArrayList<>();
+        ArrayList<Integer> positrons = new ArrayList<>();
+        ArrayList<Integer> mupluses = new ArrayList<>();
+        ArrayList<Integer> muminuses = new ArrayList<>();
 
         for (int ipart=0; ipart<particles.getRows(); ipart++) {
            
@@ -70,68 +70,83 @@ public class JpsiTcsWagon extends Wagon {
             
             if (charge == 0) continue;
 
+            final boolean isFT = (int)(Math.abs(status)/1000) == 1;
             final boolean isFD = (int)(Math.abs(status)/1000) == 2;
 
             // count positives:
             if (charge > 0) {
-                if (isFD) nposFD++;
-                npos++;
+                npositives++;
+                if (isFD) npositivesFD++;
             }
 
-            // electron/positron candidates based on EB pid:
+            if (isFT && pid==11) nelectronsFT++;
+
             if (isFD) {
-                if      (pid== 11) eleCandi.add(ipart);
-                else if (pid==-11) posCandi.add(ipart);
-            }
 
-            // muon candidates based on EC energy:
-            if (part2calo.containsKey(ipart)) {
-                ECAL ecal = new ECAL(part2calo.get(ipart),calorimeters);
-                if (ecal.isMIP()) {
-                    if (charge > 0) mupCandi.add(ipart);
-                    else            mumCandi.add(ipart);
+                // electron/positron candidates based on EB pid:
+                switch (pid) {
+                    case 11:
+                        electrons.add(ipart);
+                        break;
+                    case -11:
+                        positrons.add(ipart);
+                        break;
+                    case 2212:
+                        nprotonsFD++;
+                        break;
+                    default:
+                        break;
+                }
+
+                // muon candidates based on EC energy:
+                if (part2calo.containsKey(ipart)) {
+                    ECAL ecal = new ECAL(part2calo.get(ipart),calorimeters);
+                    if (ecal.isMIP()) {
+                        if (charge > 0) mupluses.add(ipart);
+                        else            muminuses.add(ipart);
+                    }
                 }
             }
-        }
 
-        // abort asap:
-        if ( (eleCandi.isEmpty() || posCandi.isEmpty()) &&
-             (mumCandi.isEmpty() || mupCandi.isEmpty()) ) return false;
+        }
 
         ///////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////
 
         // e+e- and at least one other positives:
-        if (eleCandi.size()>0 && posCandi.size()>0 && npos>1) return true;
+        if (electrons.size()>0 && positrons.size()>0 && npositives>1) return true;
 
         // e-e-/e+e+ and at least one other positive:
-        if (eleCandi.size()>1 && npos>0) return true;
-        if (posCandi.size()>1 && npos>2) return true;
+        if (electrons.size()>1 && npositives>0) return true;
+        if (positrons.size()>1 && npositives>2) return true;
 
         // mu+mu-p:
-        if (mumCandi.size()>0 && mupCandi.size()>0 && nposFD>1) return true;
+        if (muminuses.size()>0 && mupluses.size()>0 && npositivesFD>1) return true;
 
         // mu-mu-/mu+mu+ and at least one other positive:
-        if (mumCandi.size()>1 && nposFD>0) return true;
-        if (mupCandi.size()>1 && nposFD>2) return true;
+        if (muminuses.size()>1 && npositivesFD>0) return true;
+        if (mupluses.size()>1 && npositivesFD>2) return true;
 
         // candidates with "high" momentum:
-        ArrayList<Integer> eleHiCandi = new ArrayList<>();
-        ArrayList<Integer> posHiCandi = new ArrayList<>();
-        ArrayList<Integer> mupHiCandi = new ArrayList<>();
-        ArrayList<Integer> mumHiCandi = new ArrayList<>();
-        for (int ii : eleCandi) if (this.getMomentum(ii,particles) > MOM_HIGH) eleHiCandi.add(ii);
-        for (int ii : posCandi) if (this.getMomentum(ii,particles) > MOM_HIGH) posHiCandi.add(ii);
-        for (int ii : mumCandi) if (this.getMomentum(ii,particles) > MOM_HIGH) mumHiCandi.add(ii);
-        for (int ii : mupCandi) if (this.getMomentum(ii,particles) > MOM_HIGH) mupHiCandi.add(ii);
+        int nelectronsHi=0,npositronsHi=0,nmuplusesHi=0,nmuminusesHi=0;
+        for (int ii : electrons) if (this.getMomentum(ii,particles) > MOM_HIGH) nelectronsHi++;
+        for (int ii : positrons) if (this.getMomentum(ii,particles) > MOM_HIGH) npositronsHi++;
+        for (int ii : muminuses) if (this.getMomentum(ii,particles) > MOM_HIGH) nmuminusesHi++;
+        for (int ii : mupluses) if (this.getMomentum(ii,particles) > MOM_HIGH) nmuplusesHi++;
 
         // high-momentum e+e-/e-e-/e+e+:
-        if (eleHiCandi.size()>0 && posHiCandi.size()>0) return true;
-        if (eleHiCandi.size()>1 || posHiCandi.size()>1) return true;
+        if (nelectronsHi>0 && npositronsHi>0) return true;
+        if (nelectronsHi>1 || npositronsHi>1) return true;
 
         // high-momentum mu+mu-/mu-mu-/mu+mu+:
-        if (mumHiCandi.size()>0 && mupHiCandi.size()>0) return true;
-        if (mumHiCandi.size()>1 || mupHiCandi.size()>1) return true;
+        if (nmuminusesHi>0 && nmuplusesHi>0) return true;
+        if (nmuminusesHi>1 || nmuplusesHi>1) return true;
+
+        if (nelectronsFT>0 && nprotonsFD>0) {
+            if (nelectronsHi>0 || npositronsHi>0) {
+                return true;
+            }
+        }
 
         return false;
     }
