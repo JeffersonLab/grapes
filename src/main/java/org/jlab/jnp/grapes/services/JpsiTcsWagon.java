@@ -1,60 +1,82 @@
 package org.jlab.jnp.grapes.services;
 
-import org.jlab.jnp.hipo4.data.Bank;
-import org.jlab.jnp.hipo4.data.Event;
-import org.jlab.jnp.hipo4.data.SchemaFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.jlab.jnp.hipo4.data.Bank;
+import org.jlab.jnp.hipo4.data.Event;
+import org.jlab.jnp.hipo4.data.SchemaFactory;
+import org.jlab.jnp.physics.LorentzVector;
+
 /**
  * 
- * Skim for JPsi/TCS analysis group, E12-12-001.
+ * Skim for JPsi/TCS analysis group.
  *
  * Until standard filters provide access to momentum and ECAL energy.
  *
  * @author baltzell
  */
-public class JpsiTcsWagon extends Wagon {
+public class JpsiTcsWagon extends BeamTargetWagon {
 
+    boolean includeMissingJPsi = true;
+
+    static final float MIN_TAGGED_MISS_MASS = 1.50f; 
     static final float MIP_ECOUT_MAX = 0.110f;
     static final float MIP_ECIN_MAX = 0.100f;
     static final float MIP_PCAL_MAX = 0.200f;
     static final float MOM_HIGH = 2.0f;
 
     public JpsiTcsWagon(){
-        super("JpsiTcsWagon","baltzell","0.5");
+        super("JpsiTcsWagon","baltzell","0.6");
     }
 
     @Override
     public boolean init(String jsonString) {
-        System.out.println("JpsiTcsWagon READY.");
+        if (!super.init(jsonString)) {
+            includeMissingJPsi = false;
+            System.out.println(engineName+":  Missing-Jpsi Disabled.");
+        }
         return true;
     }
 
-    private HashMap<Integer,ArrayList<Integer>> mapByIndex(Bank pindexBank) {
-        HashMap<Integer,ArrayList<Integer>> map=new HashMap<>();
-        for (int ii=0; ii<pindexBank.getRows(); ii++) {
-            final int pindex = pindexBank.getInt("pindex",ii);
-            if (!map.containsKey(pindex)) map.put(pindex,new ArrayList<>());
-            map.get(pindex).add(ii);
+    /**
+     * Stepan's request for electron in FT and a proton with minimum missing mass.
+     * @param event
+     * @param factory
+     * @return 
+     */
+    public boolean isMissingAndTagged(Event event, SchemaFactory factory) {
+        Bank particles = new Bank(factory.getSchema("RECFT::Particle"));
+        event.read(particles);
+        if (particles.getRows()<2) return false;
+        if (particles.getInt("pid",0) != 11) return false;
+        if ( (int) (Math.abs(particles.getInt("status",0))/1000) != 1) return false;
+        LorentzVector electron = Util.getLorentzVector(particles, 0);
+        for (int i=1; i<particles.getRows(); ++i) {
+            if (particles.getInt("pid",i) == 2212) {
+                LorentzVector proton = Util.getLorentzVector(particles, i);
+                if (getMissingVector(proton,electron).mass() > MIN_TAGGED_MISS_MASS) {
+                    return true;
+                }
+            }
         }
-        return map;
+        return false;
     }
 
     @Override
     public boolean processDataEvent(Event event, SchemaFactory factory) {
 
+        if (includeMissingJPsi && isMissingAndTagged(event, factory)) return true;
+
         Bank particles = new Bank(factory.getSchema("REC::Particle"));
         Bank calorimeters = new Bank(factory.getSchema("REC::Calorimeter"));
-
         event.read(particles);
         event.read(calorimeters);
-       
         if (particles.getRows()<1) return false;
         if (calorimeters.getRows()<1) return false;
         
         // load map from REC::Particle rows to REC::Calorimeter rows:
-        HashMap<Integer,ArrayList<Integer>> part2calo = this.mapByIndex(calorimeters);
+        HashMap<Integer,ArrayList<Integer>> part2calo = Util.mapByIndex(calorimeters);
         
         int npositives=0,npositivesFD=0,nprotonsFD=0,nelectronsFT=0;
         ArrayList<Integer> electrons = new ArrayList<>();
@@ -114,14 +136,14 @@ public class JpsiTcsWagon extends Wagon {
         ///////////////////////////////////////////////////////////////////
 
         // e+e- and at least one other positives:
-        if (electrons.size()>0 && positrons.size()>0 && npositives>1) return true;
+        if (!electrons.isEmpty() && !positrons.isEmpty() && npositives>1) return true;
 
         // e-e-/e+e+ and at least one other positive:
         if (electrons.size()>1 && npositives>0) return true;
         if (positrons.size()>1 && npositives>2) return true;
 
         // mu+mu-p:
-        if (muminuses.size()>0 && mupluses.size()>0 && npositivesFD>1) return true;
+        if (!muminuses.isEmpty() && !mupluses.isEmpty() && npositivesFD>1) return true;
 
         // mu-mu-/mu+mu+ and at least one other positive:
         if (muminuses.size()>1 && npositivesFD>0) return true;
