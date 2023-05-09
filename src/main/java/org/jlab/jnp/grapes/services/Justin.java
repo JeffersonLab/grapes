@@ -20,10 +20,16 @@ public class Justin extends BeamTargetWagon {
         super("Justin","Bobcat","0.0");
     }
 
+    private boolean checkMissing(LorentzVector missing) {
+        return Math.abs(missing.mass()) < 0.1 && Math.abs(missing.p()) < 0.1);
+    }
+
     private boolean checkMissing(LorentzVector electron, LorentzVector proton, List<LorentzVector> protons) {
+        if (checkMissing(getMissingVector(electtron, proton)) {
+            return true;
+        }
         for (int j=0; j<protons.size(); ++j) {
-            LorentzVector missing = getMissingVector(electron, proton, protons.get(j));
-            if (Math.abs(missing.mass()) < 0.1 && Math.abs(missing.p()) < 0.1) {
+            if (checkMissing(getMissingVector(electron, proton, protons.get(j)))) {
                 return true;
             }
         }
