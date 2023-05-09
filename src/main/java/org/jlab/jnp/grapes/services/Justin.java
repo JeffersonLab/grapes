@@ -21,21 +21,27 @@ public class Justin extends BeamTargetWagon {
     }
 
     private boolean checkMissing(LorentzVector missing) {
-        return Math.abs(missing.mass()) < 0.1 && Math.abs(missing.p()) < 0.1);
+        return Math.abs(missing.mass()) < 0.1 && Math.abs(missing.p()) < 0.1;
     }
 
     private boolean checkMissing(LorentzVector electron, LorentzVector proton, List<LorentzVector> protons) {
-        if (checkMissing(getMissingVector(electtron, proton)) {
-            return true;
+        LorentzVector missing1 = getMissingVector(electron, proton);
+        if (checkMissing(missing1)) {
+            if (missing1.angle(proton) > 3.1415/2) {
+                return true;
+            }
         }
         for (int j=0; j<protons.size(); ++j) {
-            if (checkMissing(getMissingVector(electron, proton, protons.get(j)))) {
-                return true;
+            LorentzVector missing2 = getMissingVector(electron, proton, protons.get(j));
+            if (checkMissing(missing2)) {
+                if (missing2.angle(proton) > 3.1415/2) {
+                    return true;
+                }
             }
         }
         return false;
     }
-    
+
     @Override
     public boolean processDataEvent(Event event, SchemaFactory factory) {
 
