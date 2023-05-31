@@ -4,13 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jlab.jnp</groupId>
     <artifactId>grapes</artifactId>
-    <version>2.13-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>jar</packaging>
 
     <properties>
       <spark.version>2.2.1</spark.version>
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
+       <revision>2.14</revision>
     </properties>
 
     <dependencies>
@@ -72,6 +73,8 @@
             <descriptorRefs>
               <descriptorRef>jar-with-dependencies</descriptorRef>
             </descriptorRefs>
+	    <finalName>grapes-${revision}-core</finalName>
+            <appendAssemblyId>false</appendAssemblyId>
           </configuration>
           <executions>
             <execution>
@@ -92,6 +95,7 @@
 	<url>scpexe://clas12@jlabl1.jlab.org/group/clas/www/clasweb/html/jhep/maven</url>
       </repository>
     </distributionManagement>
+
 
 <!--
     <properties>
