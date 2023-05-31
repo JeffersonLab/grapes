@@ -1,14 +1,15 @@
 package org.jlab.jnp.grapes.services;
 
-import org.jlab.jnp.hipo4.data.Bank;
-import org.jlab.jnp.hipo4.data.Event;
-import org.jlab.jnp.hipo4.data.SchemaFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.jlab.jnp.hipo4.data.Bank;
+import org.jlab.jnp.hipo4.data.Event;
+import org.jlab.jnp.hipo4.data.SchemaFactory;
+
 /**
  * 
- * Skim for JPsi/TCS analysis group, E12-12-001.
+ * Skim for JPsi/TCS analysis group.
  *
  * Until standard filters provide access to momentum and ECAL energy.
  *
@@ -22,23 +23,12 @@ public class JpsiTcsWagon extends Wagon {
     static final float MOM_HIGH = 2.0f;
 
     public JpsiTcsWagon(){
-        super("JpsiTcsWagon","baltzell","0.5");
+        super("JpsiTcsWagon","baltzell","0.6");
     }
 
     @Override
     public boolean init(String jsonString) {
-        System.out.println("JpsiTcsWagon READY.");
         return true;
-    }
-
-    private HashMap<Integer,ArrayList<Integer>> mapByIndex(Bank pindexBank) {
-        HashMap<Integer,ArrayList<Integer>> map=new HashMap<>();
-        for (int ii=0; ii<pindexBank.getRows(); ii++) {
-            final int pindex = pindexBank.getInt("pindex",ii);
-            if (!map.containsKey(pindex)) map.put(pindex,new ArrayList<>());
-            map.get(pindex).add(ii);
-        }
-        return map;
     }
 
     @Override
@@ -46,15 +36,13 @@ public class JpsiTcsWagon extends Wagon {
 
         Bank particles = new Bank(factory.getSchema("REC::Particle"));
         Bank calorimeters = new Bank(factory.getSchema("REC::Calorimeter"));
-
         event.read(particles);
         event.read(calorimeters);
-       
         if (particles.getRows()<1) return false;
         if (calorimeters.getRows()<1) return false;
         
         // load map from REC::Particle rows to REC::Calorimeter rows:
-        HashMap<Integer,ArrayList<Integer>> part2calo = this.mapByIndex(calorimeters);
+        HashMap<Integer,ArrayList<Integer>> part2calo = Util.mapByIndex(calorimeters);
         
         int npositives=0,npositivesFD=0,nprotonsFD=0,nelectronsFT=0;
         ArrayList<Integer> electrons = new ArrayList<>();
@@ -114,14 +102,14 @@ public class JpsiTcsWagon extends Wagon {
         ///////////////////////////////////////////////////////////////////
 
         // e+e- and at least one other positives:
-        if (electrons.size()>0 && positrons.size()>0 && npositives>1) return true;
+        if (!electrons.isEmpty() && !positrons.isEmpty() && npositives>1) return true;
 
         // e-e-/e+e+ and at least one other positive:
         if (electrons.size()>1 && npositives>0) return true;
         if (positrons.size()>1 && npositives>2) return true;
 
         // mu+mu-p:
-        if (muminuses.size()>0 && mupluses.size()>0 && npositivesFD>1) return true;
+        if (!muminuses.isEmpty() && !mupluses.isEmpty() && npositivesFD>1) return true;
 
         // mu-mu-/mu+mu+ and at least one other positive:
         if (muminuses.size()>1 && npositivesFD>0) return true;
