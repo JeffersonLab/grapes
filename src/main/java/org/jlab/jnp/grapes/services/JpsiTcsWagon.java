@@ -6,7 +6,6 @@ import java.util.HashMap;
 import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.Event;
 import org.jlab.jnp.hipo4.data.SchemaFactory;
-import org.jlab.jnp.physics.LorentzVector;
 
 /**
  * 
@@ -16,11 +15,8 @@ import org.jlab.jnp.physics.LorentzVector;
  *
  * @author baltzell
  */
-public class JpsiTcsWagon extends BeamTargetWagon {
+public class JpsiTcsWagon extends Wagon {
 
-    boolean includeMissingJPsi = true;
-
-    static final float MIN_TAGGED_MISS_MASS = 1.50f; 
     static final float MIP_ECOUT_MAX = 0.110f;
     static final float MIP_ECIN_MAX = 0.100f;
     static final float MIP_PCAL_MAX = 0.200f;
@@ -32,47 +28,11 @@ public class JpsiTcsWagon extends BeamTargetWagon {
 
     @Override
     public boolean init(String jsonString) {
-        if (!super.init(jsonString)) {
-            includeMissingJPsi = false;
-            System.out.println(engineName+":  Missing-Jpsi Disabled.");
-        }
         return true;
-    }
-
-    /**
-     * Stepan's request for electron in FT and a proton with minimum missing mass.
-     * @param event
-     * @param factory
-     * @return 
-     */
-    public boolean isMissingAndTagged(Event event, SchemaFactory factory) {
-        Bank particles = new Bank(factory.getSchema("RECFT::Particle"));
-        event.read(particles);
-        final int nrows = particles.getRows();
-        int ielec = -1;
-        for (int i=0; i<nrows; ++i) {
-            if (particles.getInt("pid",i) != 11) continue;
-            if (particles.getInt("status",i)/1000 != -1) continue;
-            ielec = i;
-            break;
-        }
-        if (ielec < 0) return false;
-        LorentzVector electron = Util.getLorentzVector(particles, ielec);
-        for (int i=0; i<nrows; ++i) {
-            if (particles.getInt("pid",i) != 2212) continue;
-            if (particles.getInt("status",i)/2000 != 1) continue;
-            LorentzVector proton = Util.getLorentzVector(particles, i);
-            if (getMissingVector(proton,electron).mass() > MIN_TAGGED_MISS_MASS) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
     public boolean processDataEvent(Event event, SchemaFactory factory) {
-
-        if (includeMissingJPsi && isMissingAndTagged(event, factory)) return true;
 
         Bank particles = new Bank(factory.getSchema("REC::Particle"));
         Bank calorimeters = new Bank(factory.getSchema("REC::Calorimeter"));
