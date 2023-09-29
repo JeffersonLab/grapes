@@ -11,7 +11,7 @@ import org.jlab.jnp.physics.LorentzVector;
  */
 public class FTJpsiWagon extends BeamTargetWagon {
     
-    static final float MIN_MISS_MASS = 1.50f; 
+    static final float MIN_MISS_MASS = 2.50f; 
 
     public FTJpsiWagon(){
         super("JFTJPsiWagon","baltzell","0.6");
