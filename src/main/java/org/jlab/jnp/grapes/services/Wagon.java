@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.jlab.jnp.grapes.services;
 
 import java.util.HashSet;
@@ -34,7 +29,6 @@ public abstract class Wagon implements Engine {
     String             engineDescription = "CLARA Engine";
     
     private  int                  id = 0;
-    private  String       dataFilter = "X+:X-:Xn";
     private  int     processedEvents = 0;
     private  long          eventMask = 0xFFFFFFFFFFFFFFFFL;
     volatile SchemaFactory   engineDictionary = new SchemaFactory();
@@ -62,7 +56,7 @@ public abstract class Wagon implements Engine {
         id = jsonObj.getInt("id", 0);
         System.out.println(" CONFIG: set id = " + id);
         this.init(engineConfiguration);
-        String eventMaskString      = jsonObj.getString("trigger","0x7FFFFFFFFFFFFFFF");
+        String eventMaskString      = jsonObj.getString("trigger","0x0");
         if(eventMaskString.startsWith("0x")==true){
             eventMaskString = eventMaskString.substring(2);
         }
@@ -99,7 +93,7 @@ public abstract class Wagon implements Engine {
                 long triggerWord  = configBank.getLong("trigger", 0);
                 
                 processStatus = false;
-                if((triggerWord&eventMask)!=0L){
+                if(eventMask==0L || (triggerWord&eventMask)!=0L){
                     processStatus = processDataEvent(hipoEvent,engineDictionary);
                 } 
                 
