@@ -1,5 +1,9 @@
 package org.jlab.jnp.grapes.services;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.Event;
 import org.jlab.jnp.hipo4.data.SchemaFactory;
@@ -42,29 +46,29 @@ public class DCAlignmentWagon extends Wagon {
         if (calorimeters.getRows()<1) return false;
         if (cherenkovs.getRows()<1) return false;
         
+        HashMap<Integer,ArrayList<Integer>> part2ecal = Util.mapByIndex(calorimeters);
+        HashMap<Integer,ArrayList<Integer>> part2cher = Util.mapByIndex(cherenkovs);
+
         for(int ipart=0; ipart<particles.getRows(); ipart++) {
-            double beta    = particles.getFloat("beta",ipart);
-            double vz      = particles.getFloat("vz",ipart);
+            double beta = particles.getFloat("beta",ipart);
+            double vz   = particles.getFloat("vz",ipart);
             
             double nphe = 0;
-            for(int i=0; i<cherenkovs.getRows(); i++) {
-                if(cherenkovs.getShort("pindex", i)==ipart) {
-                    nphe = cherenkovs.getFloat("nphe", i);
-                    break;
-                }
-            }
+            if(part2cher.containsKey(ipart))
+                nphe = cherenkovs.getFloat("nphe", part2cher.get(ipart).get(0));
+            
 
             double energy = 0;
-            for (int i=0; i<calorimeters.getRows(); i++) {
-                if(calorimeters.getShort("pindex", i)==ipart) {
-                    energy+=calorimeters.getFloat("energy", i);
+            if(part2ecal.containsKey(ipart)) {
+                for(int i=0; i<part2ecal.get(ipart).size(); i++) {
+                    energy+=calorimeters.getFloat("energy", part2ecal.get(ipart).get(i));
                 }
             }
 
-            if(beta>0 && 
-                    vz>VZMIN && vz<VZMAX &&
-               nphe>NPHEMIN && 
-               energy>ECALMIN) { 
+            if( beta>0 && 
+                vz>VZMIN && vz<VZMAX &&
+                nphe>NPHEMIN && 
+                energy>ECALMIN ) { 
                 return true;
             }
         } 
