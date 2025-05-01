@@ -34,10 +34,27 @@ jobs:
           cvmfs_repositories: 'oasis.opensciencegrid.org'
       - name: build
         run: mvn package
-#      - name: tar # tarball to preserve permissions
-#        run: tar czvf coatjava.tar.gz coatjava
-#      - uses: actions/upload-artifact@v4
-#        with:
-#          name: build_${{ matrix.runner }}
-#          retention-days: 1
-#          path: coatjava.tar.gz
+      - name: tar
+        run: ./build-tarball
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build_${{ matrix.runner }}
+          retention-days: 1
+          path: grapes*.tar.gz
+  
+  release:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build_ubuntu-latest
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: grapes-?.tar.gz
+        env:
+          GITHUB_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
+
