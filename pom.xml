@@ -8,100 +8,91 @@
     <packaging>jar</packaging>
 
     <properties>
-      <spark.version>2.2.1</spark.version>
-      <maven.compiler.source>1.8</maven.compiler.source>
-      <maven.compiler.target>1.8</maven.compiler.target>
-       <revision>2.18</revision>
+        <spark.version>2.2.1</spark.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <revision>2.18</revision>
     </properties>
 
     <dependencies>
 
         <dependency>
-      <groupId>org.jlab.coda</groupId>
-      <artifactId>jclara</artifactId>
-      <version>4.3-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jlab.coda</groupId>
-      <artifactId>jtools</artifactId>
-      <version>2.2</version>
-    </dependency>
-	<!-- Apache Spark main library -->
+            <groupId>org.jlab.coda</groupId>
+            <artifactId>jclara</artifactId>
+            <version>4.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jlab.coda</groupId>
+            <artifactId>jtools</artifactId>
+            <version>2.2</version>
+        </dependency>
 
-      <dependency>
-	<groupId>org.apache.commons</groupId>
-	<artifactId>commons-lang3</artifactId>
-	<version>3.0.1</version>
-      </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0.1</version>
+        </dependency>
 
-      <dependency>
-        <groupId>org.jlab.jnp</groupId>
-        <artifactId>jnp-hipo4</artifactId>
-        <version>4.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jlab.jnp</groupId>
-        <artifactId>jnp-physics</artifactId>
-        <version>1.1-SNAPSHOT</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jlab.jnp</groupId>
+            <artifactId>jnp-hipo4</artifactId>
+            <version>4.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jlab.jnp</groupId>
+            <artifactId>jnp-physics</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <repositories>
-      <repository>
-	<id>jhep-maven</id>
-	<url>https://clasweb.jlab.org/jhep/maven</url>
-      </repository>
-      <repository>
-        <id>clas12-maven</id>
-        <url>https://clasweb.jlab.org/clas12maven</url>
-      </repository>
+        <repository>
+            <id>jhep-maven</id>
+            <url>https://clasweb.jlab.org/jhep/maven</url>
+        </repository>
+        <repository>
+            <id>clas12-maven</id>
+            <url>https://clasweb.jlab.org/clas12maven</url>
+        </repository>
     </repositories>
 
     <build>
-      <extensions>
-        <extension>
-          <groupId>org.apache.maven.wagon</groupId>
-          <artifactId>wagon-ssh-external</artifactId>
-          <version>2.8</version>
-        </extension>
-      </extensions>
-      <plugins>
-        <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.6</version>
-          <configuration>
-            <descriptorRefs>
-              <descriptorRef>jar-with-dependencies</descriptorRef>
-            </descriptorRefs>
-	    <finalName>grapes-${revision}-core</finalName>
-            <appendAssemblyId>false</appendAssemblyId>
-          </configuration>
-          <executions>
-            <execution>
-              <id>make-assembly</id> <!-- this is used for inheritance merges -->
-              <phase>package</phase> <!-- bind to the packaging phase -->
-              <goals>
-                <goal>single</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>2.8</version>
+            </extension>
+        </extensions>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <finalName>grapes-${revision}-core</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <distributionManagement>
-      <repository>
-	<id>ssh-clasweb</id>
-	<url>scpexe://clas12@jlabl1.jlab.org/group/clas/www/clasweb/html/jhep/maven</url>
-      </repository>
+        <repository>
+            <id>ssh-clasweb</id>
+            <url>scpexe://clas12@jlabl1.jlab.org/group/clas/www/clasweb/html/jhep/maven</url>
+        </repository>
     </distributionManagement>
-
-
-<!--
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
--->
 
 </project>
