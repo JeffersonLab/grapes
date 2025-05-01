@@ -5,3 +5,4 @@ rm -rf $g $g.tar.gz
 mkdir -p $g/lib/core
 cp target/$g-core.jar $g/lib/core/
 tar -czf $g.tar.gz $g
+#echo scp $g.tar.gz clas12@ifarm1901:/group/clas/www/clasweb/html/clas12offline/distribution/grapes/
