@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 g=grapes-2.18
 rm -rf $g $g.tar.gz
 mkdir -p $g/lib/core $g/lib/services $g/config
