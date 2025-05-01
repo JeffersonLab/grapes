@@ -3,7 +3,7 @@ name: grapes-ci
 on:
   pull_request:
   push:
-    branches: [ development ]
+    branches: [ main ]
     tags: [ '*' ]
 
 defaults:
