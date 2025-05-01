@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -e
-g=grapes-2.18
+g=grapes-$(grep "<revision>" pom.xml | awk -F '[<>]' '{print$3}')
 rm -rf $g $g.tar.gz
 mkdir -p $g/lib/core $g/lib/services $g/config
-cp -r bin $g/
 cp config/train.yaml $g/config/
 cp target/$g-core.jar $g/lib/core/
 tar -czf $g.tar.gz $g
