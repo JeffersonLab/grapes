@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
+# this is for a clara installation.
 set -e
+mvn package
 g=grapes-$(grep "<revision>" pom.xml | awk -F '[<>]' '{print$3}')
 rm -rf $g $g.tar.gz
 mkdir -p $g/lib/core
