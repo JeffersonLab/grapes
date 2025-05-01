@@ -2,7 +2,6 @@
 set -e
 g=grapes-$(grep "<revision>" pom.xml | awk -F '[<>]' '{print$3}')
 rm -rf $g $g.tar.gz
-mkdir -p $g/lib/core $g/lib/services $g/config
-cp config/train.yaml $g/config/
+mkdir -p $g/lib/core
 cp target/$g-core.jar $g/lib/core/
 tar -czf $g.tar.gz $g
