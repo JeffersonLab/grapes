@@ -96,7 +96,7 @@ public class LambdaWagon extends Wagon {
           int   status = recFTParticleBank.getInt("status", i);
           status = Math.abs(status);
           detector = TAGGER;
-          if(status>=4000) detector = CENTRAL; // status 3
+          // if(status>=4000) detector = CENTRAL; // status 3
 
           Particle p = new Particle();
           if(pid!=0){
@@ -124,7 +124,7 @@ public class LambdaWagon extends Wagon {
           status = Math.abs(status);
           if(triggerFD) detector = FORWARD;
           else detector = ANY;
-          if(status>=4000) detector = CENTRAL; // status 3
+          // if(status>=4000) detector = CENTRAL; // status 3
           Particle p = new Particle();
           if(pid!=0){
             p.initParticle(pid,
