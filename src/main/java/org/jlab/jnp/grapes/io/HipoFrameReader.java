@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.jlab.jnp.grapes.io;
 
 import java.nio.ByteOrder;
@@ -14,7 +9,6 @@ import org.jlab.jnp.hipo4.data.Bank;
 import org.jlab.jnp.hipo4.data.DataFrame;
 import org.jlab.jnp.hipo4.data.DataFrameBuilder;
 import org.jlab.jnp.hipo4.data.Event;
-import org.jlab.jnp.hipo4.data.Node;
 import org.jlab.jnp.hipo4.io.HipoReader;
 import org.json.JSONObject;
 
@@ -53,7 +47,7 @@ public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
         int numberOfEvents = reader.getEventCount()/this.maxEventsFrame;
         int leftOver       = reader.getEventCount()%this.maxEventsFrame;
         if(leftOver>0) numberOfEvents++;
-        return numberOfEvents;//reader.getEventCount()/this.maxEventsFrame;
+        return numberOfEvents;
     }
 
     @Override
@@ -71,7 +65,6 @@ public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
             if(eventNumber==0){
                 event.reset();
                 Bank  runConfig = new Bank(reader.getSchemaFactory().getSchema("RUN::config"),1);
-                //Node  control = new Node(1001,1, new int[]{1001,1});
                 event.write(runConfig);
                 event.setEventTag(1001);
                 builder.addEvent(event.getEventBuffer().array(), 0, 
@@ -92,9 +85,7 @@ public class HipoFrameReader extends AbstractEventReaderService<HipoReader> {
                 }
             }
             DataFrame  frame = builder.build();
-            //System.out.println("FRAME-READER : count = " + frame.getCount());
             return frame;
-            //return reader.readEvent(eventNumber);
         } catch (Exception e) {
             throw new EventReaderException(e);
         }
