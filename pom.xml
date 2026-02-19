@@ -33,11 +33,11 @@
     <repositories>
         <repository>
             <id>jhep-maven</id>
-            <url>https://clasweb.jlab.org/jhep/maven</url>
+            <url>https://clasweb.jlab.org/.jhep/maven</url>
         </repository>
         <repository>
             <id>clas12-maven</id>
-            <url>https://clasweb.jlab.org/clas12maven</url>
+            <url>https://clasweb.jlab.org/.clas12maven</url>
         </repository>
     </repositories>
 
