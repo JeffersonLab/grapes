@@ -8,8 +8,8 @@
     <packaging>jar</packaging>
 
     <properties>
-        <revision>2.20</revision>
-        <maven.compiler.release>17</maven.compiler.release>
+        <revision>2.21</revision>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
 
     <dependencies>
