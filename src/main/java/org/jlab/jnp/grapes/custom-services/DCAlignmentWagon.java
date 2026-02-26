@@ -19,7 +19,7 @@ import org.jlab.jnp.hipo4.data.SchemaFactory;
  */
 public class DCAlignmentWagon extends Wagon {
 
-    static final double VZMIN = -35;
+    static final double VZMIN = -45;
     static final double VZMAX =  35;
     static final double ECALMIN = 0;
     static final double NPHEMIN = 2.0;
