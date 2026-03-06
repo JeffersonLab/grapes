@@ -1,0 +1,25 @@
+image: codecr.jlab.org/hallb/clas12/container-forge/base:latest
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_BRANCH == "main"
+      auto_cancel:
+        on_new_commit: conservative
+
+mirror:
+  stage: mirror
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    - git config --global user.email "ci-bot@code.jlab.org"
+    - git config --global user.name "GitLab CI"
+    - git checkout main
+    - git config pull.rebase true
+    - git remote set-url origin https://github.com/jeffersonlab/grapes
+    - git pull origin main
+    - git remote set-url origin https://gitlab-ci-token:${CI_JOB_TOKEN}@code.jlab.org/hallb/clas12/coatjava/grapes.git
+    - git push
+
+
