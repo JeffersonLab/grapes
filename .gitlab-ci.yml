@@ -7,6 +7,9 @@ workflow:
       auto_cancel:
         on_new_commit: conservative
 
+stages:
+  - mirror
+
 mirror:
   stage: mirror
   rules:
