@@ -7,8 +7,11 @@ workflow:
       auto_cancel:
         on_new_commit: conservative
 
+stages:
+  - mirror
+
 mirror:
-  stage: .pre
+  stage: mirror
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
