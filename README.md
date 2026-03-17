@@ -1,4 +1,4 @@
-This reopisotry is archival, read-only, moved to https://code.jlab.org/hallb/clas12/coatjava/grapes
+<!--This reopisotry is archival, read-only, moved to https://code.jlab.org/hallb/clas12/coatjava/grapes-->
 
 # grapes
 This is CLAS12 "analysis trains".  Everything below was imported from [here](https://userweb.jlab.org/~gavalian/docs/sphinx/hipo/html/chapters/analysis_train.html) and converted to markdown.
