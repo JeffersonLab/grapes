@@ -54,7 +54,7 @@ public class ElecFDKPlusWagon extends BeamTargetWagon {
 		LorentzVector W = new LorentzVector(0,0,0,0);
 		W.add(Q);
 		W.add(VT);
-		if (W.mass() > 1.3 && W.mass() < 3.2){
+		if (W.mass() > 1.3){
 		    flag_elec = true;
 		}
 	    }
