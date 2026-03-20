@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author lcsmith
  */
-public class ElastWagon extends Wagon {
+public class ElastWagon extends BeamTargetWagon {
 
     private static         int callCount = 0;
     private static final   int THRESHOLD = 10;
@@ -56,9 +56,9 @@ public class ElastWagon extends Wagon {
 	int runno = Config.getInt("run",0);
 	if(runno==0) return false;
 	
-        double eb=0;    	
-    	if (runno>=19204 && runno<19662) eb = 6.39463; //rgk-f23, rgk-s24
-    	if (runno>=19662 && runno<19894) eb = 8.47757; //rgk-s24
+        double eb = beamEnergy;    	
+	//   	if (runno>=19204 && runno<19662) eb = 6.39463; //rgk-f23, rgk-s24
+	//   	if (runno>=19662 && runno<19894) eb = 8.47757; //rgk-s24
 
 	double mp = 0.93828; 
     	double theta_pc = Math.toRadians(THETA_PC); //proton theta cutoff   	
