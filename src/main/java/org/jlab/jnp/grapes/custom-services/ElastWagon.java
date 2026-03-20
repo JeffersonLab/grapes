@@ -27,8 +27,7 @@ public class ElastWagon extends BeamTargetWagon {
 
     @Override
     public boolean init(String jsonString) {
-        System.out.println("ElastWagon READY.");
-        return true;
+        return super.init(jsonString);
     }
 
     private double getMM(LorentzVector Vb, LorentzVector Vt, LorentzVector Ve, LorentzVector...Vx) {
