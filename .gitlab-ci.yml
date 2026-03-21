@@ -11,7 +11,7 @@ stages:
   - mirror
 
 mirror:
-  stage: mirror
+  stage: .pre
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
